@@ -1,0 +1,129 @@
+import getTable from "../supabase/getTable";
+import { Database } from "../supabase/types";
+import updateTableRows from "../supabase/updateTableRows";
+import { Ingredients, Meal } from "./types";
+
+export type BackstockRow = Database['public']['Tables']['backstock']['Row']
+
+export default async function makeBackstockAdjustments(
+  ingredients: Ingredients
+): Promise<{
+  meals: Meal[]
+}> {
+  const allBackstock = await getTable('backstock') as BackstockRow[];
+  const meals: Meal[] = [];
+
+  const usedBackstockIds: number[] = [];
+  const sortedProteins = Object.keys(ingredients).sort();
+  for (const protein of sortedProteins) {
+    const flavorMap = ingredients[protein];
+    const sortedFlavors = Object.keys(flavorMap).sort();
+    for (const flavor of sortedFlavors) {
+      const weight = ingredients[protein][flavor];
+      const backstockRows = getBackstockWeights(allBackstock, protein, flavor, weight);
+
+      if (!backstockRows) {
+        meals.push({
+          protein,
+          flavor,
+          weightOz: weight,
+          weightLbOz: getLbOzWeight(weight),
+          backstockWeight: 0,
+          cookedWeightOz: await getCookedWeight(protein, weight)
+        });
+        continue;
+      }
+
+      const adjWeight = backstockRows.reduce((finalWeight, row) => {
+        usedBackstockIds.push(row.id);
+        return finalWeight - row.weight;
+      }, weight);
+      meals.push({
+        protein,
+        flavor,
+        weightOz: adjWeight,
+        weightLbOz: getLbOzWeight(adjWeight),
+        backstockWeight: weight - adjWeight,
+        cookedWeightOz: await getCookedWeight(protein, adjWeight)
+      });
+    }
+  }
+
+  await updateTableRows('backstock', { 'available': false }, usedBackstockIds);
+
+  return { meals }
+}
+
+async function getCookedWeight(protein: string, weight: number) {
+  const shrinkTable = await getTable('proteins', ['name', 'shrink']) as { name: string, shrink: number }[];
+  const shrink = shrinkTable.reduce((acc, curr) => {
+    acc[curr.name] = curr.shrink;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const multiplier = 1 + (shrink[protein] / 100);
+  return weight * multiplier;
+}
+
+function getBackstockWeights(allBackstock: BackstockRow[], protein: string, flavor: string, weight: number): BackstockRow[] | null {
+  const validBackstock = allBackstock.filter((row) => {
+    return row.available && row.weight <= weight
+              && row.protein === protein && row.flavor == flavor
+  });
+  if (validBackstock.length === 0) return null;
+
+  // Iterate over subsets using binary strings
+  const validSubsetsWithTotals: { total: number, subset: BackstockRow[] }[] = [];
+  for (let i = 1; i < 2**validBackstock.length; i++) {
+    const subsetInstructions = i.toString(2).padStart(validBackstock.length, '0');
+    const subset: BackstockRow[] = [];
+    let subsetTotal = 0;
+
+    for (let j = 0; j < subsetInstructions.length; j++) {
+      if (subsetInstructions[j] === '1') {
+        subsetTotal += validBackstock[j].weight;
+        subset.push(validBackstock[j]);
+      }
+    }
+
+    if (subsetTotal <= weight) {
+      validSubsetsWithTotals.push({
+        total: subsetTotal,
+        subset: subset
+      })
+    }
+  }
+  if (validSubsetsWithTotals.length === 0) return null;
+
+  const largeSubsets: BackstockRow[][] = [];
+  let currLargestWeight = 0;
+  for (const { total, subset } of validSubsetsWithTotals) {
+    if (total >= currLargestWeight) {
+      if (total > currLargestWeight) {
+        currLargestWeight = total;
+        largeSubsets.length = 0;
+      }
+      largeSubsets.push(subset);
+    }
+  }
+
+  // We may not find a unique subset, so we just make a random choice
+  const soRandom = Math.floor(Math.random() * largeSubsets.length);
+  const backstockWeights = largeSubsets[soRandom];
+
+  return backstockWeights;
+}
+
+function getLbOzWeight(oz: number): string {
+  /** Calculate the pounds and remaining ounces */
+  const lbs = Math.floor(oz / 16);
+  const lbString = lbs == 1 ? "lb" : "lbs";
+  const remainingOz = Math.ceil(oz % 16);
+
+  /** Round up to the nearest pound in the event that remaining oz is 16 */
+  if (remainingOz === 16) {
+    return `${lbs + 1}${lbString} 0oz`;
+  }
+  
+  return `${lbs}${lbString} ${remainingOz}oz`;
+}

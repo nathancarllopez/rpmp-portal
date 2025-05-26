@@ -1,11 +1,12 @@
 import type { FileWithPath } from "@mantine/dropzone";
 
-const apiUrl = "http://localhost:3001/orders/process-orders";
+const endpoint = "/orders/process-orders";
 
 export default async function uploadOrder(orderFile: FileWithPath) {
   const formData = new FormData();
   formData.append("orders", orderFile);
 
+  const apiUrl = import.meta.env.VITE_BACKEND_URL + endpoint;
   const response = await fetch(apiUrl, {
     method: "POST",
     body: formData,

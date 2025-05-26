@@ -1,6 +1,6 @@
 import type { User } from "@supabase/supabase-js";
 
-const apiUrl = "http://localhost:3001/auth/create-user";
+const endpoint = "/auth/create-user";
 
 export interface NewUserInfo {
   email: string;
@@ -16,6 +16,7 @@ export interface NewUserInfo {
 }
 
 export async function createUser(info: NewUserInfo): Promise<User> {
+  const apiUrl = import.meta.env.VITE_BACKEND_URL + endpoint;
   const response = await fetch(apiUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

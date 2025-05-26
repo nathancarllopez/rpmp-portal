@@ -2,10 +2,11 @@
   "name": "frontend",
   "private": true,
   "type": "module",
+  "homepage": "https://nathancarllopez.github.io/rpmp-portal/",
   "scripts": {
     "dev": "vite --port 3000",
     "start": "vite --port 3000",
-    "build": "vite build && tsc",
+    "build": "tsc --noEmit && vite build",
     "serve": "vite preview",
     "test": "vitest run",
     "deploy": "gh-pages -d dist"

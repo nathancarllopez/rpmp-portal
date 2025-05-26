@@ -21,9 +21,9 @@ export default function CreateProfileForm() {
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
-      firstName: "Zoe",
-      lastName: "Bean",
-      email: "gimmesnacks@now.com",
+      firstName: "",
+      lastName: "",
+      email: "",
       kitchenRate: "",
       drivingRate: "",
       role: "employee",

@@ -32,8 +32,8 @@ function LoginForm() {
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
-      email: import.meta.env.VITE_LOGIN_EMAIL,
-      password: import.meta.env.VITE_LOGIN_PASSWORD,
+      email: "",
+      password: "",
     },
     validate: {
       email: isEmail("Invalid email format"),

@@ -20,7 +20,7 @@ app.get("/clean-up", async (req, res) => {
   res.send('done');
 });
 
-app.get("/", (req, res) => {
+app.get("/health", (req, res) => {
   res.send("Hello from the backend!");
 });
 

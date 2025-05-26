@@ -37,6 +37,8 @@ export default function ViewEditProfile({
   profile,
   showAdminControls
 }: ViewEditProfileProps) {
+  const navigate = useNavigate();
+
   const [mobileFormVisible, { toggle: toggleMobileForm }] =
     useDisclosure(false);
   const [desktopFormVisible, { toggle: toggleDesktopForm }] =
@@ -79,7 +81,6 @@ export default function ViewEditProfile({
     });
   };
 
-  const navigate = useNavigate();
   const handleDelete = async () => {
     const userId = profile?.userId;
     const fullName = profile?.fullName;

@@ -10,12 +10,9 @@
     "start": "npm run dev --workspace backend",
     "dev": "concurrently \"npm run dev --workspace frontend\" \"npm run dev --workspace backend\"",
     "build": "echo \"Building both frontend and backend...\"",
-    "test": "echo \"No tests yet\"",
-    "predeploy": "cd frontend && npm install && npm run build",
-    "deploy": "gh-pages -d frontend/dist"
+    "test": "echo \"No tests yet\""
   },
   "devDependencies": {
-    "concurrently": "^9.1.2",
-    "gh-pages": "^6.3.0"
+    "concurrently": "^9.1.2"
   }
 }

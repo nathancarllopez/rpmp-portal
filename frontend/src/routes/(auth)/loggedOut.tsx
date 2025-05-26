@@ -1,15 +1,17 @@
+import useCountdown from "@/hooks/useCountdown";
 import Subtitle from "@/routes/-components/Subtitle";
 import { Anchor, Box, Center, Container, Title } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+
 
 export const Route = createFileRoute("/(auth)/loggedOut")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const remaining = useCountdown(5);
+  const navigateTo = "/login";
+  const remaining = useCountdown(5, navigateTo);
 
   return (
     <Container size={460} my={50} ta={"center"}>
@@ -24,30 +26,4 @@ function RouteComponent() {
       </Anchor>
     </Container>
   );
-}
-
-function useCountdown(duration: number) {
-  const [remaining, setRemaining] = useState(duration);
-  const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    intervalIdRef.current = setInterval(() => {
-      setRemaining((prev) => prev - 1);
-    }, 1000);
-
-    return () => {
-      if (intervalIdRef.current) {
-        clearInterval(intervalIdRef.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (remaining === 0) {
-      navigate({ to: "/login" });
-    }
-  }, [remaining]);
-
-  return remaining;
 }

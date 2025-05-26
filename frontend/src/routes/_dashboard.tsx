@@ -16,23 +16,57 @@ import {
 } from "@mantine/core";
 import Navbar from "./-components/Navbar.tsx";
 import ColorSchemeToggle from "./-components/ColorSchemeToggle.tsx";
+import getSession from "@/integrations/supabase/auth/getSession.ts";
+import getProfile from "@/integrations/supabase/auth/getProfile.ts";
 
 export const Route = createFileRoute("/_dashboard")({
-  beforeLoad: ({ context, location }) => {
-    if (!context.authCtx.isAuthenticated) {
-      notifications.show({
-        withCloseButton: true,
-        color: "red",
-        title: "Authentication Required",
-        message: "You must be logged in to access this page.",
-      });
-      throw redirect({
-        to: "/login",
-        search: {
-          redirect: location.href,
-        },
-      });
+  beforeLoad: async ({ context, location }) => {
+    const { isAuthenticated, setProfile, logout } = context.authCtx;
+
+    if (isAuthenticated) return;
+
+    const session = await getSession();
+    if (session) {
+      try {
+        const userId = session.user.id;
+        const profile = await getProfile(userId);
+
+        setProfile(profile);
+
+        throw redirect({ to: location.href });
+      } catch (error) {
+        console.warn(`Error logging in: ${error}`);
+
+        notifications.show({
+          withCloseButton: true,
+          color: "red",
+          title: "Error logging in",
+          message: "You'll be logged out and sent back to the login page...",
+        });
+
+        await logout();
+
+        throw redirect({
+          to: "/login",
+          search: {
+            redirect: location.href,
+          },
+        });
+      }
     }
+
+    notifications.show({
+      withCloseButton: true,
+      color: "red",
+      title: "Authentication Required",
+      message: "You must be logged in to access this page.",
+    });
+    throw redirect({
+      to: "/login",
+      search: {
+        redirect: location.href,
+      },
+    });
   },
   component: Dashboard,
 });

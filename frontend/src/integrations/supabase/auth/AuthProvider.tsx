@@ -1,6 +1,6 @@
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "../types/types";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, type Dispatch, type SetStateAction } from "react";
 import { supabase } from "../client";
 import getProfile from "./getProfile";
 
@@ -9,6 +9,7 @@ export interface AuthContext {
   login: (email: string, password: string) => Promise<User>;
   logout: () => Promise<void>;
   profile: Profile | null;
+  setProfile: Dispatch<SetStateAction<Profile | null>>;
 }
 
 const AuthContext = createContext<AuthContext | null>(null);
@@ -50,7 +51,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, profile }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout, profile, setProfile }}>
       {children}
     </AuthContext.Provider>
   );

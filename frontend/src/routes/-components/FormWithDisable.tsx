@@ -20,6 +20,7 @@ export default function FormWithDisable({
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
+    await Promise.resolve(); // Forces react to finish updating isSubmitting
     try {
       await onSubmit(e);
     } finally {

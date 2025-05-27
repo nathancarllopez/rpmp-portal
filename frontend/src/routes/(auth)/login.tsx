@@ -57,8 +57,6 @@ function LoginForm() {
           message: "Please update your password.",
         });
 
-        await new Promise((resolve) => setTimeout(() => resolve(console.log("wait over")), 2000));
-
         await navigate({ to: "/changePassword" });
       }
 

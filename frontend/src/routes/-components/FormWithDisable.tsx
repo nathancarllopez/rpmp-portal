@@ -17,15 +17,19 @@ export default function FormWithDisable({
   const isLoading = useRouterState({ select: (state) => state.isLoading });
   const isDisabled = isSubmitting || isLoading;
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    await Promise.resolve(); // Forces react to finish updating isSubmitting
-    try {
-      await onSubmit(e);
-    } finally {
-      setIsSubmitting(false);
-    }
+
+    // I want to force react to flush the call the setIsSubmitting before calling onSubmit
+    // I should probably think of a better way to do this...
+    setTimeout(async () => {
+      try {
+        await onSubmit(e);
+      } finally {
+        setIsSubmitting(false);
+      }
+    }, 0);
   };
 
   return (

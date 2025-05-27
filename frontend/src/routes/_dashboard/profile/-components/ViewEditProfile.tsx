@@ -20,13 +20,14 @@ import MissingImage from "/image-missing.jpg";
 import { IconEdit, IconX } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import { isEmail, useForm } from "@mantine/form";
-import { getRouteApi, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { notifications } from "@mantine/notifications";
 import type { Profile } from "@/integrations/supabase/types/types.ts";
 import capitalize from "../../-util/capitalize";
 import RoleSelect from "./RoleSelect";
 import { useAuth } from "@/integrations/supabase/auth/AuthProvider";
 import deleteUser from "@/api/deleteUser";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ViewEditProfileProps {
   profile: Profile | null;
@@ -37,8 +38,9 @@ export default function ViewEditProfile({
   profile,
   showAdminControls
 }: ViewEditProfileProps) {
-  // const parentRouter = getRouteApi()
+  const { profile: userProfile } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const [mobileFormVisible, { toggle: toggleMobileForm }] =
     useDisclosure(false);
@@ -62,8 +64,6 @@ export default function ViewEditProfile({
     },
     validateInputOnBlur: true,
   });
-
-  const { profile: userProfile } = useAuth();
 
   const showPasswordField = profile?.id && userProfile?.id && profile.id === userProfile.id;
   const showDeleteButton = profile?.id && userProfile?.id && profile.id !== userProfile.id;
@@ -102,7 +102,7 @@ export default function ViewEditProfile({
         message: `The profile of ${fullName} has been deleted`,
       });
 
-      await navigate({ to: "/home" });
+      queryClient.invalidateQueries({ queryKey: ["profiles"] });
     } catch (error) {
       notifications.show({
         withCloseButton: true,

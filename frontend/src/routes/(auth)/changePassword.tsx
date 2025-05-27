@@ -2,7 +2,7 @@ import Subtitle from "@/routes/-components/Subtitle";
 import { notifications } from "@mantine/notifications";
 import { hasLength, matchesField, useForm } from "@mantine/form";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { Button, Container, Paper, PasswordInput, Title } from "@mantine/core";
+import { Button, Container, PasswordInput, Title } from "@mantine/core";
 import getSession from "@/integrations/supabase/auth/getSession";
 import FormWithDisable from "../-components/FormWithDisable";
 import changePassword from "@/integrations/supabase/auth/changePassword";

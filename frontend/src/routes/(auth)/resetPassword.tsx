@@ -4,7 +4,6 @@ import {
   Anchor,
   Button,
   Container,
-  Paper,
   TextInput,
   Title,
 } from "@mantine/core";

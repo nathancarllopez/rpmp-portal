@@ -5,7 +5,6 @@ import {
   Center,
   Grid,
   NumberInput,
-  Paper,
   TextInput,
 } from "@mantine/core";
 import { isEmail, isNotEmpty, useForm } from "@mantine/form";
@@ -111,7 +110,7 @@ export default function CreateProfileForm() {
           />
         </Grid.Col>
         <Grid.Col>
-          <RoleSelect form={form}/>
+          <RoleSelect form={form} />
         </Grid.Col>
         <Grid.Col span={{ base: 12, sm: 6 }}>
           <NumberInput
@@ -141,7 +140,13 @@ export default function CreateProfileForm() {
         </Grid.Col>
       </Grid>
       <Center>
-        <Button fullWidth type="submit" mt="xl" name="formId" value="createProfile">
+        <Button
+          fullWidth
+          type="submit"
+          mt="xl"
+          name="formId"
+          value="createProfile"
+        >
           Create profile
         </Button>
       </Center>

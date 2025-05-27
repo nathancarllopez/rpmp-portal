@@ -329,11 +329,15 @@ export default function ViewEditProfile({
               </Paper>
             </Modal>
 
-            <Divider/>
+            {showDeleteButton && (
+              <>
+                <Divider/>
 
-            <Button variant="outline" color="red" onClick={openModal}>
-              Delete Profile
-            </Button>
+                <Button variant="outline" color="red" onClick={openModal}>
+                  Delete Profile
+                </Button>
+              </>
+            )}
 
             <Divider />
           </Stack>

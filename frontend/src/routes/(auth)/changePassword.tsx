@@ -68,28 +68,26 @@ function ChangePassword() {
       </Title>
       <Subtitle>Enter your new password below</Subtitle>
 
-      <Paper mt={50}>
-        <FormWithDisable onSubmit={form.onSubmit(handleSubmit)}>
-          <PasswordInput
-            label="New Password"
-            name="password"
-            required
-            key={form.key("password")}
-            {...form.getInputProps("password")}
-          />
-          <PasswordInput
-            mt="md"
-            label="Confirm New Password"
-            name="confirmPassword"
-            required
-            key={form.key("confirmPassword")}
-            {...form.getInputProps("confirmPassword")}
-          />
-          <Button type="submit" fullWidth mt="xl">
-            Change password
-          </Button>
-        </FormWithDisable>
-      </Paper>
+      <FormWithDisable margins={{ mt: 50 }} onSubmit={form.onSubmit(handleSubmit)}>
+        <PasswordInput
+          label="New Password"
+          name="password"
+          required
+          key={form.key("password")}
+          {...form.getInputProps("password")}
+        />
+        <PasswordInput
+          mt="md"
+          label="Confirm New Password"
+          name="confirmPassword"
+          required
+          key={form.key("confirmPassword")}
+          {...form.getInputProps("confirmPassword")}
+        />
+        <Button type="submit" fullWidth mt="xl">
+          Change password
+        </Button>
+      </FormWithDisable>
     </Container>
   );
 }

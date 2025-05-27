@@ -11,7 +11,6 @@ import {
   Anchor,
   Button,
   Container,
-  Paper,
   PasswordInput,
   TextInput,
   Title,
@@ -32,8 +31,8 @@ function LoginForm() {
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
-      email: "",
-      password: "",
+      email: "nathancarllopez@gmail.com",
+      password: "zoeiscute",
     },
     validate: {
       email: isEmail("Invalid email format"),
@@ -57,6 +56,8 @@ function LoginForm() {
           title: "Nice to meet you!",
           message: "Please update your password.",
         });
+
+        await new Promise((resolve) => setTimeout(() => resolve(console.log("wait over")), 2000));
 
         await navigate({ to: "/changePassword" });
       }
@@ -88,29 +89,27 @@ function LoginForm() {
         <Subtitle>Forgot your password?</Subtitle>
       </Anchor>
 
-      <Paper mt={50}>
-        <FormWithDisable onSubmit={form.onSubmit(handleSubmit)}>
-          <TextInput
-            label="Email"
-            name="email"
-            autoComplete="email"
-            required
-            key={form.key("email")}
-            {...form.getInputProps("email")}
-          />
-          <PasswordInput
-            mt="md"
-            label="Password"
-            name="password"
-            required
-            key={form.key("password")}
-            {...form.getInputProps("password")}
-          />
-          <Button type="submit" fullWidth mt="xl">
-            Sign in
-          </Button>
-        </FormWithDisable>
-      </Paper>
+      <FormWithDisable margins={{ mt: 50 }} onSubmit={form.onSubmit(handleSubmit)}>
+        <TextInput
+          label="Email"
+          name="email"
+          autoComplete="email"
+          required
+          key={form.key("email")}
+          {...form.getInputProps("email")}
+        />
+        <PasswordInput
+          mt="md"
+          label="Password"
+          name="password"
+          required
+          key={form.key("password")}
+          {...form.getInputProps("password")}
+        />
+        <Button type="submit" fullWidth mt="xl">
+          Sign in
+        </Button>
+      </FormWithDisable>
     </Container>
   );
 }

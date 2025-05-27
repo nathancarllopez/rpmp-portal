@@ -59,22 +59,20 @@ function ResetPassword() {
         <Subtitle>Go back to the login page</Subtitle>
       </Anchor>
 
-      <Paper mt={50}>
-        <FormWithDisable onSubmit={form.onSubmit(handleSubmit)}>
-          <TextInput
-            label="Email"
-            name="email"
-            type="email"
-            required
-            autoComplete={"email"}
-            key={form.key("email")}
-            {...form.getInputProps("email")}
-          />
-          <Button type="submit" fullWidth mt={"xl"}>
-            Email reset link
-          </Button>
-        </FormWithDisable>
-      </Paper>
+      <FormWithDisable margins={{ mt: 50 }} onSubmit={form.onSubmit(handleSubmit)}>
+        <TextInput
+          label="Email"
+          name="email"
+          type="email"
+          required
+          autoComplete={"email"}
+          key={form.key("email")}
+          {...form.getInputProps("email")}
+        />
+        <Button type="submit" fullWidth mt={"xl"}>
+          Email reset link
+        </Button>
+      </FormWithDisable>
     </Container>
   );
 }

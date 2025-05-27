@@ -1,3 +1,4 @@
+import { LoadingOverlay } from "@mantine/core";
 import { useRouterState } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 
@@ -30,6 +31,7 @@ export default function FormWithDisable({
         disabled={isDisabled}
         style={{ all: "unset", display: "contents" }}
       >
+        <LoadingOverlay visible={isDisabled}/>
         {children}
       </fieldset>
     </form>

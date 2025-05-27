@@ -20,7 +20,7 @@ import MissingImage from "/image-missing.jpg";
 import { IconEdit, IconX } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import { isEmail, useForm } from "@mantine/form";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { getRouteApi, Link, useNavigate } from "@tanstack/react-router";
 import { notifications } from "@mantine/notifications";
 import type { Profile } from "@/integrations/supabase/types/types.ts";
 import capitalize from "../../-util/capitalize";
@@ -37,6 +37,7 @@ export default function ViewEditProfile({
   profile,
   showAdminControls
 }: ViewEditProfileProps) {
+  // const parentRouter = getRouteApi()
   const navigate = useNavigate();
 
   const [mobileFormVisible, { toggle: toggleMobileForm }] =
@@ -45,9 +46,6 @@ export default function ViewEditProfile({
     useDisclosure(false);
   const [passwordModalOpened, { open: openModal, close: closeModal }] =
     useDisclosure(false);
-
-  const { profile: userProfile } = useAuth();
-  const showPasswordField = profile?.id && userProfile?.id && profile.id === userProfile.id;
 
   const form = useForm({
     mode: "uncontrolled",
@@ -65,6 +63,10 @@ export default function ViewEditProfile({
     validateInputOnBlur: true,
   });
 
+  const { profile: userProfile } = useAuth();
+
+  const showPasswordField = profile?.id && userProfile?.id && profile.id === userProfile.id;
+  const showDeleteButton = profile?.id && userProfile?.id && profile.id !== userProfile.id;
   const profileInfo = [
     { header: "Email", data: profile?.email },
     { header: "Role", data: capitalize(profile?.role || "") },
@@ -201,7 +203,7 @@ export default function ViewEditProfile({
               </Stack>
             </form>
 
-            {showAdminControls && (
+            {showDeleteButton && (
               <>
                 <Divider/>
 

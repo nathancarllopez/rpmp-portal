@@ -58,6 +58,7 @@ function LoginForm() {
         });
 
         await navigate({ to: "/changePassword" });
+        return;
       }
 
       notifications.show({

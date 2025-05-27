@@ -29,7 +29,7 @@ export default function FormWithDisable({
 
   return (
     <Paper {...margins} pos={"relative"}>
-      <LoadingOverlay visible={isDisabled} zIndex={1000}/>
+      <LoadingOverlay visible={isDisabled} zIndex={100}/>
       <form onSubmit={handleSubmit}>
         <fieldset
           disabled={isDisabled}

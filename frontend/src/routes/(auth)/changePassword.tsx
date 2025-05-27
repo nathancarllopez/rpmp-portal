@@ -2,7 +2,7 @@ import Subtitle from "@/routes/-components/Subtitle";
 import { notifications } from "@mantine/notifications";
 import { hasLength, matchesField, useForm } from "@mantine/form";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { Button, Container, PasswordInput, Title } from "@mantine/core";
+import { Container, PasswordInput, Title } from "@mantine/core";
 import getSession from "@/integrations/supabase/auth/getSession";
 import FormWithDisable from "../-components/FormWithDisable";
 import changePassword from "@/integrations/supabase/auth/changePassword";
@@ -68,7 +68,14 @@ function ChangePassword() {
       </Title>
       <Subtitle>Enter your new password below</Subtitle>
 
-      <FormWithDisable margins={{ mt: 50 }} onSubmit={form.onSubmit(handleSubmit)}>
+      <FormWithDisable
+        margins={{ mt: 50 }}
+        submitButtonLabels={{
+          label: "Change Password",
+          disabledLabel: "Changing Password...",
+        }}
+        onSubmit={form.onSubmit(handleSubmit)}
+      >
         <PasswordInput
           label="New Password"
           name="password"
@@ -84,9 +91,6 @@ function ChangePassword() {
           key={form.key("confirmPassword")}
           {...form.getInputProps("confirmPassword")}
         />
-        <Button type="submit" fullWidth mt="xl">
-          Change password
-        </Button>
       </FormWithDisable>
     </Container>
   );

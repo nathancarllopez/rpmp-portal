@@ -9,7 +9,6 @@ import {
 } from "@tanstack/react-router";
 import {
   Anchor,
-  Button,
   Container,
   PasswordInput,
   TextInput,
@@ -44,6 +43,7 @@ function LoginForm() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const handleSubmit = async (values: typeof form.values) => {
+    console.log('on correct branch')
     try {
       const { email, password } = values;
       const user = await login(email, password);
@@ -88,7 +88,14 @@ function LoginForm() {
         <Subtitle>Forgot your password?</Subtitle>
       </Anchor>
 
-      <FormWithDisable margins={{ mt: 50 }} onSubmit={form.onSubmit(handleSubmit)}>
+      <FormWithDisable
+        margins={{ mt: 50 }}
+        submitButtonLabels={{
+          label: "Sign In",
+          disabledLabel: "Signing In...",
+        }}
+        onSubmit={form.onSubmit(handleSubmit)}
+      >
         <TextInput
           label="Email"
           name="email"
@@ -105,9 +112,6 @@ function LoginForm() {
           key={form.key("password")}
           {...form.getInputProps("password")}
         />
-        <Button type="submit" fullWidth mt="xl">
-          Sign in
-        </Button>
       </FormWithDisable>
     </Container>
   );

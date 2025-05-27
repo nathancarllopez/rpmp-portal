@@ -1,9 +1,16 @@
-import { LoadingOverlay, Paper } from "@mantine/core";
+import { Button, Center, Paper } from "@mantine/core";
 import { useRouterState } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useRef, type FormEvent } from "react";
+
+interface SubmitButtonLabels {
+  label: string;
+  disabledLabel: string;
+}
 
 interface FormWithStateProps {
   margins?: Record<string, number>;
+  submitButtonLabels: SubmitButtonLabels;
+  submitButtonStyle?: Record<string, any>;
   onSubmit: (e: FormEvent<HTMLFormElement>) => Promise<void> | void;
   children: React.ReactNode;
 }
@@ -11,37 +18,44 @@ interface FormWithStateProps {
 // Testing netlify CI
 export default function FormWithDisable({
   margins,
+  submitButtonLabels,
+  submitButtonStyle = {
+    fullWidth: true,
+    mt: "xl",
+  },
   onSubmit,
   children,
 }: FormWithStateProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const isLoading = useRouterState({ select: (state) => state.isLoading });
-  const isDisabled = isSubmitting || isLoading;
+  const isSubmittingRef = useRef(false);
+  const isDisabled = isSubmittingRef.current || isLoading;
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const { label, disabledLabel } = submitButtonLabels;
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    isSubmittingRef.current = true;
 
-    // I want to force react to flush the call the setIsSubmitting before calling onSubmit
-    // I should probably think of a better way to do this...
-    setTimeout(async () => {
-      try {
-        await onSubmit(e);
-      } finally {
-        setIsSubmitting(false);
-      }
-    }, 0);
+    try {
+      await onSubmit(e);
+    } finally {
+      isSubmittingRef.current = false;
+    }
   };
 
   return (
     <Paper {...margins} pos={"relative"}>
-      <LoadingOverlay visible={isDisabled} zIndex={100}/>
       <form onSubmit={handleSubmit}>
         <fieldset
           disabled={isDisabled}
           style={{ all: "unset", display: "contents" }}
         >
           {children}
+          <Center>
+            <Button type="submit" {...submitButtonStyle}>
+              {isDisabled ? disabledLabel : label}
+            </Button>
+          </Center>
         </fieldset>
       </form>
     </Paper>

@@ -1,12 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { createUser, type NewUserInfo } from "@/api/createUser";
-import {
-  Button,
-  Center,
-  Grid,
-  NumberInput,
-  TextInput,
-} from "@mantine/core";
+import { Grid, NumberInput, TextInput } from "@mantine/core";
 import { isEmail, isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import FormWithDisable from "@/routes/-components/FormWithDisable";
@@ -79,7 +73,13 @@ export default function CreateProfileForm() {
   };
 
   return (
-    <FormWithDisable onSubmit={form.onSubmit(handleSubmit)}>
+    <FormWithDisable
+      submitButtonLabels={{
+        label: "Create Profile",
+        disabledLabel: "Creating Profile...",
+      }}
+      onSubmit={form.onSubmit(handleSubmit)}
+    >
       <Grid>
         <Grid.Col span={{ base: 12, sm: 6 }}>
           <TextInput
@@ -139,17 +139,6 @@ export default function CreateProfileForm() {
           />
         </Grid.Col>
       </Grid>
-      <Center>
-        <Button
-          fullWidth
-          type="submit"
-          mt="xl"
-          name="formId"
-          value="createProfile"
-        >
-          Create profile
-        </Button>
-      </Center>
     </FormWithDisable>
   );
 }

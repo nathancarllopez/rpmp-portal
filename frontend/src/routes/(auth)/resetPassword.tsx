@@ -1,12 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { isEmail, useForm } from "@mantine/form";
-import {
-  Anchor,
-  Button,
-  Container,
-  TextInput,
-  Title,
-} from "@mantine/core";
+import { Anchor, Container, TextInput, Title } from "@mantine/core";
 import Subtitle from "@/routes/-components/Subtitle";
 import { notifications } from "@mantine/notifications";
 import resetPassword from "@/integrations/supabase/auth/resetPassword";
@@ -58,7 +52,14 @@ function ResetPassword() {
         <Subtitle>Go back to the login page</Subtitle>
       </Anchor>
 
-      <FormWithDisable margins={{ mt: 50 }} onSubmit={form.onSubmit(handleSubmit)}>
+      <FormWithDisable
+        margins={{ mt: 50 }}
+        submitButtonLabels={{
+          label: "Email reset link",
+          disabledLabel: "Emailing reset link...",
+        }}
+        onSubmit={form.onSubmit(handleSubmit)}
+      >
         <TextInput
           label="Email"
           name="email"
@@ -68,9 +69,6 @@ function ResetPassword() {
           key={form.key("email")}
           {...form.getInputProps("email")}
         />
-        <Button type="submit" fullWidth mt={"xl"}>
-          Email reset link
-        </Button>
       </FormWithDisable>
     </Container>
   );

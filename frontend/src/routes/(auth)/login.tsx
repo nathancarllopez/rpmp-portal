@@ -31,8 +31,8 @@ function LoginForm() {
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
-      email: "nathancarllopez@gmail.com",
-      password: "zoeiscute",
+      email: "",
+      password: "",
     },
     validate: {
       email: isEmail("Invalid email format"),

@@ -43,7 +43,6 @@ function LoginForm() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const handleSubmit = async (values: typeof form.values) => {
-    console.log('on correct branch')
     try {
       const { email, password } = values;
       const user = await login(email, password);

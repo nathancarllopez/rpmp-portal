@@ -5,7 +5,6 @@ import {
   Divider,
   Group,
   HoverCard,
-  Image,
   Modal,
   NumberInput,
   Paper,
@@ -16,7 +15,6 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
-import MissingImage from "/image-missing.jpg";
 import { IconEdit, IconX } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import { isEmail, useForm } from "@mantine/form";
@@ -28,6 +26,7 @@ import RoleSelect from "./RoleSelect";
 import { useAuth } from "@/integrations/supabase/auth/AuthProvider";
 import deleteUser from "@/api/deleteUser";
 import { useQueryClient } from "@tanstack/react-query";
+import ProfilePic from "./ProfilePic";
 
 interface ViewEditProfileProps {
   profile: Profile | null;
@@ -116,7 +115,7 @@ export default function ViewEditProfile({
     <Paper>
       <Stack visibleFrom="sm">
         <Group gap={"xl"}>
-          <Image src={MissingImage} radius={"50%"} w={"33%"} />
+          <ProfilePic showUpload={desktopFormVisible}/>
 
           <Divider orientation="vertical" />
 
@@ -230,7 +229,7 @@ export default function ViewEditProfile({
       </Stack>
 
       <Stack hiddenFrom="sm" gap={"sm"}>
-        <Image src={MissingImage} radius={"50%"} />
+        <ProfilePic showUpload={mobileFormVisible}/>
 
         <Divider />
 

@@ -13,12 +13,11 @@ export const requireAdmin: RequestHandler = async (
     return;
   }
 
-  const token = authHeader.replace("Bearer ", "");
-
+  const userId = authHeader.replace("Bearer ", "");
   const {
     data: { user },
     error: userError,
-  } = await supabase.auth.getUser(token);
+  } = await supabase.auth.getUser(userId);
 
   if (userError) {
     res.status(500).json({ error: `Failed to get user: ${userError.message}` });
@@ -41,8 +40,7 @@ export const requireAdmin: RequestHandler = async (
     return;
   }
 
-  // const hasPermission = profile?.role && ['admin', 'owner'].includes(profile.role);
-  const hasPermission = true;
+  const hasPermission = profile?.role && ['admin', 'owner'].includes(profile.role);
   if (!profile || !hasPermission) {
     res
       .status(403)

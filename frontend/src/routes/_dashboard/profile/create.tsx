@@ -5,12 +5,16 @@ import { isEmail, isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import FormWithDisable from "@/routes/-components/FormWithDisable";
 import RoleSelect from "./-components/RoleSelect";
+import { useAuth } from "@/integrations/supabase/auth/AuthProvider";
 
 export const Route = createFileRoute("/_dashboard/profile/create")({
   component: CreateProfileForm,
 });
 
 export default function CreateProfileForm() {
+  const navigate = useNavigate();
+  const { profile } = useAuth();
+
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
@@ -29,7 +33,6 @@ export default function CreateProfileForm() {
     validateInputOnBlur: true,
   });
 
-  const navigate = useNavigate();
   const handleSubmit = async (values: typeof form.values) => {
     const newUserInfo: NewUserInfo = {
       email: values.email,
@@ -45,7 +48,7 @@ export default function CreateProfileForm() {
     };
 
     try {
-      const user = await createUser(newUserInfo);
+      const user = await createUser(newUserInfo, profile?.userId);
       console.log("user:", user);
 
       notifications.show({

@@ -83,16 +83,16 @@ export default function ViewEditProfile({
   };
 
   const handleDelete = async () => {
-    const userId = profile?.userId;
+    const idToDelete = profile?.userId;
     const fullName = profile?.fullName;
-    if (!userId) {
+    if (!idToDelete) {
       throw new Error(`Cannot find user id for this profile: ${profile}`)
     } else if (!fullName) {
       throw new Error(`Cannot find full name for this profile: ${profile}`)
     }
 
     try {
-      await deleteUser(userId);
+      await deleteUser(idToDelete, userProfile?.userId);
 
       notifications.show({
         withCloseButton: true,

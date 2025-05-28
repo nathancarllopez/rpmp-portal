@@ -13,7 +13,7 @@ export default async function deleteUser(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer: ${userId}`,
+      "Authorization": `Bearer ${userId}`,
     },
     body: JSON.stringify({ idToDelete }),
   });

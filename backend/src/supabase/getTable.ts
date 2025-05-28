@@ -1,17 +1,29 @@
+import { TableColumn, TableName, TableRow } from "../business-logic/types";
 import cache from "../cache";
 import { supabase } from "./client";
-import { TableName } from "./types";
 
-export default async function getTable(tableName: TableName, columnsToSelect: string[] = []) {
-  const cachedTable = cache.get(tableName);
-  if (cachedTable) return cachedTable
-  
-  const { data, error } = await supabase.from(tableName).select( ...columnsToSelect );
+export default async function getTable<T extends TableName>(
+  tableName: T,
+  columnsToSelect: TableColumn<T>[] = []
+): Promise<TableRow<T>[]> {
+  const cachedTable: string | undefined = cache.get(tableName);
+  if (cachedTable) {
+    const parsed: TableRow<T>[] = JSON.parse(cachedTable);
+    return parsed;
+  }
+
+  const { data, error } = await supabase
+    .from(tableName)
+    .select(columnsToSelect.join(","));
 
   if (error) {
+    console.log("Failed to fetch table");
+    console.log("tableName", tableName);
+    console.log("columnsToSelect", columnsToSelect);
     throw error;
   }
 
-  cache.set(tableName, data);
-  return data;
+  const stringified: string = JSON.stringify(data);
+  cache.set(tableName, stringified);
+  return data as unknown as TableRow<T>[];
 }

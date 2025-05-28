@@ -1,27 +1,38 @@
 import getTable from "../supabase/getTable";
-import { Database } from "../supabase/types";
 import updateTableRows from "../supabase/updateTableRows";
-import { Ingredients, Meal } from "./types";
-
-export type BackstockRow = Database['public']['Tables']['backstock']['Row']
+import { BackstockRow, Ingredients, Meal } from "./types";
 
 export default async function makeBackstockAdjustments(
   ingredients: Ingredients
 ): Promise<{
-  meals: Meal[]
+  meals: Meal[];
 }> {
-  const allBackstock = await getTable('backstock') as BackstockRow[];
-  const meals: Meal[] = [];
+  const allBackstock = await getTable("backstock");
+  const allShrink = (await getTable("proteins", ["name", "shrink"])).reduce(
+    (acc, curr) => {
+      acc[curr.name] = curr.shrink;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
 
+  const meals: Meal[] = [];
   const usedBackstockIds: number[] = [];
+
   const sortedProteins = Object.keys(ingredients).sort();
   for (const protein of sortedProteins) {
     const flavorMap = ingredients[protein];
     const sortedFlavors = Object.keys(flavorMap).sort();
     for (const flavor of sortedFlavors) {
       const weight = ingredients[protein][flavor];
-      const backstockRows = getBackstockWeights(allBackstock, protein, flavor, weight);
+      const backstockRows = getBackstockWeights(
+        allBackstock,
+        protein,
+        flavor,
+        weight
+      );
 
+      const shrinkMultiplier = 1 + allShrink[protein] / 100;
       if (!backstockRows) {
         meals.push({
           protein,
@@ -29,7 +40,7 @@ export default async function makeBackstockAdjustments(
           weightOz: weight,
           weightLbOz: getLbOzWeight(weight),
           backstockWeight: 0,
-          cookedWeightOz: await getCookedWeight(protein, weight)
+          cookedWeightOz: weight * shrinkMultiplier,
         });
         continue;
       }
@@ -44,60 +55,60 @@ export default async function makeBackstockAdjustments(
         weightOz: adjWeight,
         weightLbOz: getLbOzWeight(adjWeight),
         backstockWeight: weight - adjWeight,
-        cookedWeightOz: await getCookedWeight(protein, adjWeight)
+        cookedWeightOz: adjWeight * shrinkMultiplier,
       });
     }
   }
 
-  await updateTableRows('backstock', { 'available': false }, usedBackstockIds);
+  await updateTableRows("backstock", { available: false }, usedBackstockIds);
 
-  return { meals }
+  return { meals };
 }
 
-async function getCookedWeight(protein: string, weight: number) {
-  const shrinkTable = await getTable('proteins', ['name', 'shrink']) as { name: string, shrink: number }[];
-  const shrink = shrinkTable.reduce((acc, curr) => {
-    acc[curr.name] = curr.shrink;
-    return acc;
-  }, {} as Record<string, number>);
-
-  const multiplier = 1 + (shrink[protein] / 100);
-  return weight * multiplier;
-}
-
-function getBackstockWeights(allBackstock: BackstockRow[], protein: string, flavor: string, weight: number): BackstockRow[] | null {
+function getBackstockWeights(
+  allBackstock: BackstockRow[],
+  protein: string,
+  flavor: string,
+  weight: number
+): BackstockRow[] | null {
   const validBackstock = allBackstock.filter((row) => {
-    return row.available && row.weight <= weight
-              && row.protein === protein && row.flavor == flavor
+    return (
+      row.available &&
+      row.weight <= weight &&
+      row.protein === protein &&
+      row.flavor === flavor
+    );
   });
   if (validBackstock.length === 0) return null;
 
   // Iterate over subsets using binary strings
-  const validSubsetsWithTotals: { total: number, subset: BackstockRow[] }[] = [];
-  for (let i = 1; i < 2**validBackstock.length; i++) {
-    const subsetInstructions = i.toString(2).padStart(validBackstock.length, '0');
+  const validSubsets: { total: number; subset: BackstockRow[] }[] = [];
+  for (let i = 1; i < 2 ** validBackstock.length; i++) {
+    const subsetInstructions = i
+      .toString(2)
+      .padStart(validBackstock.length, "0");
     const subset: BackstockRow[] = [];
     let subsetTotal = 0;
 
     for (let j = 0; j < subsetInstructions.length; j++) {
-      if (subsetInstructions[j] === '1') {
+      if (subsetInstructions[j] === "1") {
         subsetTotal += validBackstock[j].weight;
         subset.push(validBackstock[j]);
       }
     }
 
     if (subsetTotal <= weight) {
-      validSubsetsWithTotals.push({
+      validSubsets.push({
         total: subsetTotal,
-        subset: subset
-      })
+        subset: subset,
+      });
     }
   }
-  if (validSubsetsWithTotals.length === 0) return null;
+  if (validSubsets.length === 0) return null;
 
   const largeSubsets: BackstockRow[][] = [];
   let currLargestWeight = 0;
-  for (const { total, subset } of validSubsetsWithTotals) {
+  for (const { total, subset } of validSubsets) {
     if (total >= currLargestWeight) {
       if (total > currLargestWeight) {
         currLargestWeight = total;
@@ -124,6 +135,6 @@ function getLbOzWeight(oz: number): string {
   if (remainingOz === 16) {
     return `${lbs + 1}${lbString} 0oz`;
   }
-  
+
   return `${lbs}${lbString} ${remainingOz}oz`;
 }

@@ -7,6 +7,6 @@ const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 export const supabase = createClient<Database>(supabaseUrl, serviceRoleKey, {
   auth: {
     autoRefreshToken: false,
-    persistSession: false
-  }
+    persistSession: false,
+  },
 });

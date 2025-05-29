@@ -105,7 +105,7 @@ function SearchProfiles() {
         {data?.map((profile) => (
           <ViewEditProfile
             key={profile.id}
-            profile={profile}
+            profileToDisplay={profile}
             showAdminControls={true}
           />
         ))}

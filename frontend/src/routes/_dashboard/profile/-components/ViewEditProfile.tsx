@@ -5,8 +5,8 @@ import {
   Divider,
   Group,
   HoverCard,
-  Image,
   Modal,
+  NumberFormatter,
   NumberInput,
   Paper,
   PasswordInput,
@@ -16,7 +16,6 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
-import MissingImage from "/image-missing.jpg";
 import { IconEdit, IconX } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import { isEmail, useForm } from "@mantine/form";
@@ -28,17 +27,18 @@ import RoleSelect from "./RoleSelect";
 import { useAuth } from "@/integrations/supabase/auth/AuthProvider";
 import deleteUser from "@/api/deleteUser";
 import { useQueryClient } from "@tanstack/react-query";
+import ProfilePic from "./ProfilePic";
 
 interface ViewEditProfileProps {
-  profile: Profile | null;
-  showAdminControls: boolean
+  profileToDisplay: Profile | null;
+  showAdminControls: boolean;
 }
 
 export default function ViewEditProfile({
-  profile,
-  showAdminControls
+  profileToDisplay,
+  showAdminControls,
 }: ViewEditProfileProps) {
-  const { profile: userProfile } = useAuth();
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
 
   const [mobileFormVisible, { toggle: toggleMobileForm }] =
@@ -51,26 +51,62 @@ export default function ViewEditProfile({
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
-      email: profile?.email,
-      kitchenRate: profile?.kitchenRate,
-      drivingRate: profile?.drivingRate,
-      role: profile?.role,
-      newPassword: ""
+      email: profileToDisplay?.email,
+      kitchenRate: profileToDisplay?.kitchenRate,
+      drivingRate: profileToDisplay?.drivingRate,
+      role: profileToDisplay?.role,
+      newPassword: "",
     },
     validate: {
       email: isEmail("Invalid email format"),
-      newPassword: (value) => (value.length > 0 && value.length < 6 ? "Password must be at least 6 characters" : null)
+      newPassword: (value) =>
+        value.length > 0 && value.length < 6
+          ? "Password must be at least 6 characters"
+          : null,
     },
     validateInputOnBlur: true,
   });
 
-  const showPasswordField = profile?.id && userProfile?.id && profile.id === userProfile.id;
-  const showDeleteButton = profile?.id && userProfile?.id && profile.id !== userProfile.id;
+  const profilesMatch = !!(
+    profileToDisplay?.userId &&
+    profile?.userId &&
+    profileToDisplay.userId === profile.userId
+  );
+  const profilesDoNotMatch = !!(
+    profileToDisplay?.userId &&
+    profile?.userId &&
+    profileToDisplay.userId !== profile.userId
+  );
+
   const profileInfo = [
-    { header: "Email", data: profile?.email },
-    { header: "Role", data: capitalize(profile?.role || "") },
-    { header: "Kitchen Rate", data: profile?.kitchenRate || "n/a" },
-    { header: "Driving Rate", data: profile?.drivingRate || "n/a" },
+    { header: "Email", data: profileToDisplay?.email },
+    { header: "Role", data: capitalize(profileToDisplay?.role || "") },
+    {
+      header: "Kitchen Rate",
+      data: profileToDisplay?.kitchenRate ? (
+        <NumberFormatter
+          prefix="$"
+          decimalScale={2}
+          fixedDecimalScale
+          value={profileToDisplay.kitchenRate}
+        />
+      ) : (
+        "n/a"
+      ),
+    },
+    {
+      header: "Driving Rate",
+      data: profileToDisplay?.drivingRate ? (
+        <NumberFormatter
+          prefix="$"
+          decimalScale={2}
+          fixedDecimalScale
+          value={profileToDisplay.drivingRate}
+        />
+      ) : (
+        "n/a"
+      ),
+    },
   ];
 
   const handleSubmit = async () => {
@@ -83,16 +119,20 @@ export default function ViewEditProfile({
   };
 
   const handleDelete = async () => {
-    const idToDelete = profile?.userId;
-    const fullName = profile?.fullName;
+    const idToDelete = profileToDisplay?.userId;
+    const fullName = profileToDisplay?.fullName;
     if (!idToDelete) {
-      throw new Error(`Cannot find user id for this profile: ${profile}`)
+      throw new Error(
+        `Cannot find user id for this profile: ${profileToDisplay}`
+      );
     } else if (!fullName) {
-      throw new Error(`Cannot find full name for this profile: ${profile}`)
+      throw new Error(
+        `Cannot find full name for this profile: ${profileToDisplay}`
+      );
     }
 
     try {
-      await deleteUser(idToDelete, userProfile?.userId);
+      await deleteUser(idToDelete, profile?.userId);
 
       notifications.show({
         withCloseButton: true,
@@ -110,19 +150,22 @@ export default function ViewEditProfile({
         message: `${error}`,
       });
     }
-  }
+  };
 
   return (
     <Paper>
       <Stack visibleFrom="sm">
         <Group gap={"xl"}>
-          <Image src={MissingImage} radius={"50%"} w={"33%"} />
+          <ProfilePic
+            showUpload={desktopFormVisible && profilesMatch}
+            userId={profileToDisplay?.userId}
+          />
 
           <Divider orientation="vertical" />
 
           <Stack justify="center" flex={1}>
             <Group justify="space-between">
-              <Title>{profile?.fullName}</Title>
+              <Title>{profileToDisplay?.fullName}</Title>
               <ActionIcon
                 onClick={toggleDesktopForm}
                 variant="default"
@@ -159,7 +202,7 @@ export default function ViewEditProfile({
                   key={form.key("email")}
                   {...form.getInputProps("email")}
                 />
-                {showPasswordField && (
+                {profilesMatch && (
                   <PasswordInput
                     label="New Password"
                     name="newPassword"
@@ -169,7 +212,7 @@ export default function ViewEditProfile({
                 )}
                 {showAdminControls && (
                   <>
-                    <RoleSelect form={form}/>
+                    <RoleSelect form={form} />
                     <Group grow>
                       <NumberInput
                         label="Kitchen Rate"
@@ -202,9 +245,9 @@ export default function ViewEditProfile({
               </Stack>
             </form>
 
-            {showDeleteButton && (
+            {profilesDoNotMatch && (
               <>
-                <Divider/>
+                <Divider />
 
                 <HoverCard>
                   <HoverCard.Target>
@@ -218,9 +261,7 @@ export default function ViewEditProfile({
                   </HoverCard.Target>
                   <HoverCard.Dropdown>
                     <Title order={2}>Warning</Title>
-                    <Text>
-                      This is permanent!
-                    </Text>
+                    <Text>This is permanent!</Text>
                   </HoverCard.Dropdown>
                 </HoverCard>
               </>
@@ -230,12 +271,15 @@ export default function ViewEditProfile({
       </Stack>
 
       <Stack hiddenFrom="sm" gap={"sm"}>
-        <Image src={MissingImage} radius={"50%"} />
+        <ProfilePic
+          showUpload={mobileFormVisible && profilesMatch}
+          userId={profileToDisplay?.userId}
+        />
 
         <Divider />
 
         <Group h={"100%"} align="center">
-          <Title mr={"auto"}>{profile?.fullName}</Title>
+          <Title mr={"auto"}>{profileToDisplay?.fullName}</Title>
           <ActionIcon
             onClick={toggleMobileForm}
             variant="default"
@@ -258,7 +302,7 @@ export default function ViewEditProfile({
                   key={form.key("email")}
                   {...form.getInputProps("email")}
                 />
-                {showPasswordField && (
+                {profilesMatch && (
                   <PasswordInput
                     label="New Password"
                     name="newPassword"
@@ -268,7 +312,7 @@ export default function ViewEditProfile({
                 )}
                 {showAdminControls && (
                   <>
-                    <RoleSelect form={form}/>
+                    <RoleSelect form={form} />
                     <Group grow>
                       <NumberInput
                         label="Kitchen Rate"
@@ -310,9 +354,7 @@ export default function ViewEditProfile({
               <Paper>
                 <Stack>
                   <Title>Warning</Title>
-                  <Text>
-                    Are you sure you want to delete this profile?
-                  </Text>
+                  <Text>Are you sure you want to delete this profile?</Text>
                   <Button
                     color="red"
                     component={Link}
@@ -329,9 +371,9 @@ export default function ViewEditProfile({
               </Paper>
             </Modal>
 
-            {showDeleteButton && (
+            {profilesDoNotMatch && (
               <>
-                <Divider/>
+                <Divider />
 
                 <Button variant="outline" color="red" onClick={openModal}>
                   Delete Profile

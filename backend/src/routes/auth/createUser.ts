@@ -45,5 +45,17 @@ export default async function createUser(
     return;
   }
 
+  const { error: avatarError } = await supabase
+    .storage
+    .from('avatars')
+    .copy('image-missing.jpg', `profilePics/${data.user.id}.jpg`);
+    
+  if (avatarError) {
+    console.log('avatarError');
+    console.log(avatarError.message);
+    res.status(500).json({ error: avatarError.message });
+    return;
+  }
+
   res.status(200).json({ user: data.user });
 }

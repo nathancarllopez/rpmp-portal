@@ -49,7 +49,6 @@ export default function CreateProfileForm() {
 
     try {
       const user = await createUser(newUserInfo, profile?.userId);
-      console.log("user:", user);
 
       notifications.show({
         withCloseButton: true,

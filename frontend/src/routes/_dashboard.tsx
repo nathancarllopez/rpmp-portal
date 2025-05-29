@@ -29,12 +29,8 @@ export const Route = createFileRoute("/_dashboard")({
 
     if (session) {
       try {
-        console.log("session", session);
-
         const userId = session.user.id;
         const profile = await getProfile(userId);
-
-        console.log("profile", profile);
 
         setProfile(profile);
 

@@ -1,11 +1,41 @@
-import { Center, Image, Overlay, Title } from "@mantine/core";
-import MissingImage from "/image-missing.jpg";
-import { Dropzone } from "@mantine/dropzone";
+import { AspectRatio, Center, Image, Overlay, Title } from "@mantine/core";
+import {
+  Dropzone,
+  IMAGE_MIME_TYPE,
+  type FileWithPath,
+} from "@mantine/dropzone";
 import { notifications } from "@mantine/notifications";
+import { useQueryClient } from "@tanstack/react-query";
+import updateProfilePic from "@/integrations/supabase/auth/updateProfilePic";
+import MissingImage from "/image-missing.jpg";
+import useProfilePic from "@/integrations/tanstack-query/useProfilePic";
 
-export default function ProfilePic({ showUpload }: { showUpload: boolean }) {
-  const handlePicDrop = async () => {};
-  
+interface ProfilePicProps {
+  showUpload: boolean;
+  userId: string | undefined;
+}
+
+export default function ProfilePic({ showUpload, userId }: ProfilePicProps) {
+  const queryClient = useQueryClient();
+  const { data } = useProfilePic(userId);
+
+  const imgSrc = data || MissingImage;
+
+  const handlePicDrop = async (files: FileWithPath[]) => {
+    try {
+      await updateProfilePic(files[0], userId);
+
+      queryClient.invalidateQueries({ queryKey: ["profilePicUrl", userId] });
+    } catch (error) {
+      notifications.show({
+        withCloseButton: true,
+        color: "red",
+        title: "Upload Failed",
+        message: `${error}`,
+      });
+    }
+  };
+
   return (
     <>
       {showUpload ? (
@@ -19,20 +49,24 @@ export default function ProfilePic({ showUpload }: { showUpload: boolean }) {
               message: "Please upload an image file",
             })
           }
-          accept={["image/png", "image/jpeg", "image/svg+xml", "image/gif"]}
+          accept={IMAGE_MIME_TYPE}
           radius={"50%"}
           w={{ base: "100%", sm: "33%" }}
           p={0}
         >
-          <Image src={MissingImage} radius={"50%"}/>
+          <AspectRatio ratio={1}>
+            <Image src={imgSrc} radius={"50%"} />
+          </AspectRatio>
           <Overlay radius={"50%"}>
             <Center h={"100%"}>
-              <Title ta={"center"}>Upload Profile Picture</Title>
+              <Title ta={"center"}>Update Profile Picture</Title>
             </Center>
           </Overlay>
         </Dropzone>
       ) : (
-        <Image src={MissingImage} radius={"50%"} w={{ base: "100%", sm: "33%" }}/>
+        <AspectRatio ratio={1} w={{ base: "100%", sm: "33%" }}>
+          <Image src={imgSrc} radius={"50%"} />
+        </AspectRatio>
       )}
     </>
   );

@@ -143,11 +143,17 @@ export default function ViewEditProfile({
 
       queryClient.invalidateQueries({ queryKey: ["profiles"] });
     } catch (error) {
+      if (error instanceof Error) {
+        console.warn("Error uploading deleting profile: ", error.message);
+      } else {
+        console.warn("Unkown error uploading deleting profile: ", JSON.stringify(error));
+      }
+
       notifications.show({
         withCloseButton: true,
         color: "red",
         title: "Profile deletion failed",
-        message: `${error}`,
+        message: `${(error as Error)?.message || JSON.stringify(error)}`,
       });
     }
   };

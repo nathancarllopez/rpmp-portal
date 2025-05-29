@@ -27,11 +27,17 @@ export default function ProfilePic({ showUpload, userId }: ProfilePicProps) {
 
       queryClient.invalidateQueries({ queryKey: ["profilePicUrl", userId] });
     } catch (error) {
+      if (error instanceof Error) {
+        console.warn("Error uploading profile picture: ", error.message);
+      } else {
+        console.warn("Unkown error uploading profile picture: ", JSON.stringify(error));
+      }
+
       notifications.show({
         withCloseButton: true,
         color: "red",
         title: "Upload Failed",
-        message: `${error}`,
+        message: `${(error as Error)?.message || JSON.stringify(error)}`,
       });
     }
   };

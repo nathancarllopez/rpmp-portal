@@ -22,6 +22,12 @@ export default function parseOrders(csvString: string): Promise<Order[]> {
           const cleaned = cleanRecords(records);
           resolve(cleaned);
         } catch (error) {
+          if (error instanceof Error) {
+            console.warn("Error parsing order: ", error.message);
+          } else {
+            console.warn("Unkown error parsing order: ", JSON.stringify(error));
+          }
+
           reject(error);
         }
       }

@@ -69,11 +69,17 @@ function LoginForm() {
 
       await navigate({ to: "/home" });
     } catch (error) {
+      if (error instanceof Error) {
+        console.warn("Error logging in: ", error.message);
+      } else {
+        console.warn("Unkown error logging in: ", JSON.stringify(error));
+      }
+
       notifications.show({
         withCloseButton: true,
         color: "red",
         title: "Error signing in",
-        message: `${error}`,
+        message: `${(error as Error)?.message || JSON.stringify(error)}`,
       });
     }
   };

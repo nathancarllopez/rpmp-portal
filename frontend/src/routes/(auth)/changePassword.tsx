@@ -52,11 +52,17 @@ function ChangePassword() {
 
       await navigate({ to: "/home" });
     } catch (error) {
+      if (error instanceof Error) {
+        console.warn("Error updating password: ", error.message);
+      } else {
+        console.warn("Unkown error updating password: ", JSON.stringify(error));
+      }
+
       notifications.show({
         withCloseButton: true,
         color: "red",
         title: "Error updating password",
-        message: `${error}`,
+        message: `${(error as Error)?.message || JSON.stringify(error)}`,
       });
     }
   };

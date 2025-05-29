@@ -65,11 +65,17 @@ export default function CreateProfileForm() {
         }),
       });
     } catch (error) {
+      if (error instanceof Error) {
+        console.warn("Error creating profile: ", error.message);
+      } else {
+        console.warn("Unkown error creating profile: ", JSON.stringify(error));
+      }
+
       notifications.show({
         withCloseButton: true,
         color: "red",
         title: "Profile creation failed",
-        message: `${error}`,
+        message: `${(error as Error)?.message || JSON.stringify(error)}`,
       });
     }
   };

@@ -32,7 +32,12 @@ router.post(
       report.pipe(res);
       report.end();
     } catch (error) {
-      console.error(error);
+      if (error instanceof Error) {
+        console.warn("Error processing order: ", error.message);
+      } else {
+        console.warn("Unkown error processing order: ", JSON.stringify(error));
+      }
+      
       res.status(500).json({ error: "Failed to process orders" });
     }
   }

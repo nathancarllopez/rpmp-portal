@@ -20,22 +20,34 @@ import getSession from "@/integrations/supabase/auth/getSession.ts";
 import getProfile from "@/integrations/supabase/auth/getProfile.ts";
 
 export const Route = createFileRoute("/_dashboard")({
-  beforeLoad: async ({ context, location }) => {
+  beforeLoad: async ({ context }) => {
     const { isAuthenticated, setProfile, logout } = context.authCtx;
 
     if (isAuthenticated) return;
 
     const session = await getSession();
+
     if (session) {
       try {
+        console.log("session", session);
+
         const userId = session.user.id;
         const profile = await getProfile(userId);
 
+        console.log("profile", profile);
+
         setProfile(profile);
 
-        throw redirect({ to: location.href });
+        return;
       } catch (error) {
-        console.warn(`Error logging in: ${error}`);
+        if (error instanceof Error) {
+          console.warn("Error checking authentication: ", error.message);
+        } else {
+          console.warn(
+            "Unkown error checking authentication: ",
+            JSON.stringify(error)
+          );
+        }
 
         notifications.show({
           withCloseButton: true,

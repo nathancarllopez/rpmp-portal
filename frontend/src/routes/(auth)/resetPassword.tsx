@@ -34,11 +34,17 @@ function ResetPassword() {
         message: "You can close this window and check your email.",
       });
     } catch (error) {
+      if (error instanceof Error) {
+        console.warn("Error resetting password: ", error.message);
+      } else {
+        console.warn("Unkown error resetting password: ", JSON.stringify(error));
+      }
+
       notifications.show({
         withCloseButton: true,
         color: "red",
         title: "Error resetting password",
-        message: `${error}`,
+        message: `${(error as Error)?.message || JSON.stringify(error)}`,
       });
     }
   };

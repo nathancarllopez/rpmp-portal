@@ -10,7 +10,12 @@ export default async function useWakeUpServer() {
       try {
         await fetch(apiUrl);
       } catch (error) {
-        console.error('Server wake up failed:', error);
+        if (error instanceof Error) {
+          console.warn("Error waking up server: ", error.message);
+        } else {
+          console.warn("Unkown error waking up server: ", JSON.stringify(error));
+        }
+        
         notifications.show({
           withCloseButton: true,
           color: "red",

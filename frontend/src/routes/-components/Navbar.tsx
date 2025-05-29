@@ -20,6 +20,7 @@ import {
 import { Link } from "@tanstack/react-router";
 import NavLinkLabel from "./NavLinkLabel.tsx";
 import { useAuth } from "@/integrations/supabase/auth/AuthProvider.tsx";
+import useProfilePic from "@/integrations/tanstack-query/useProfilePic.ts";
 
 interface NavLinkInfo {
   id: string;
@@ -59,6 +60,8 @@ export default function Navbar({
   closeOnMobile: () => void;
 }) {
   const { profile, logout } = useAuth();
+  const { data } = useProfilePic(profile?.userId);
+
   const navLinks = ALL_NAV_LINKS.filter((link) =>
     link.hasPermission.includes((profile?.role || "employee") as UserRole)
   );
@@ -93,10 +96,17 @@ export default function Navbar({
           }
           leftSection={
             <Skeleton visible={!profile}>
-              <Avatar
-                name={profile?.fullName}
-                color="initials"
-              />
+              {data ? (
+                <Avatar
+                  src={data}
+                  alt={profile?.fullName}
+                />
+              ) : (
+                <Avatar
+                  name={profile?.fullName}
+                  color="initials"
+                />
+              )}
             </Skeleton>
           }
           rightSection={<IconChevronRight size={14} />}

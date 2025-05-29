@@ -12,6 +12,9 @@ function ProfilePage() {
     profile?.role || "employee"
   );
   return (
-    <ViewEditProfile profile={profile} showAdminControls={showAdminControls} />
+    <ViewEditProfile
+      profileToDisplay={profile}
+      showAdminControls={showAdminControls}
+    />
   );
 }

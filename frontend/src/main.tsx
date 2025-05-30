@@ -1,3 +1,10 @@
+import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
+import "@mantine/dropzone/styles.css";
+import { theme } from "@/theme.ts";
+import { MantineProvider } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
+
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
@@ -32,7 +39,10 @@ declare module "@tanstack/react-router" {
 
 function RouteWrapper() {
   const authCtx = useAuth();
-  return <RouterProvider router={router} context={{ authCtx }} />;
+
+  return (
+      <RouterProvider router={router} context={{ authCtx }} />
+  );
 }
 
 // Render the app
@@ -41,14 +51,22 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <TanStackQueryProvider.Provider>
-        <AuthProvider>
-          <RouteWrapper />
-        </AuthProvider>
-      </TanStackQueryProvider.Provider>
+      <MantineProvider defaultColorScheme="dark" theme={theme}>
+        <Notifications />
+        <TanStackQueryProvider.Provider>
+          <AuthProvider>
+            <RouteWrapper />
+          </AuthProvider>
+        </TanStackQueryProvider.Provider>
+      </MantineProvider>
     </StrictMode>
   );
 }
+
+// const initialLoader = document.getElementById('initial-loader');
+// if (initialLoader) {
+//   initialLoader.remove();
+// }
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

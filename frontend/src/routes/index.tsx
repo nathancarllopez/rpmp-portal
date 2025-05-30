@@ -6,6 +6,7 @@ import {
   Link,
   redirect,
   useNavigate,
+  useRouter,
 } from "@tanstack/react-router";
 import {
   Anchor,
@@ -17,10 +18,19 @@ import {
 import { useAuth } from "@/integrations/supabase/auth/AuthProvider";
 import FormWithDisable from "./-components/FormWithDisable";
 
+type LoginRedirect = {
+  redirect: string;
+};
+
 export const Route = createFileRoute("/")({
-  beforeLoad: ({ context }) => {
+  validateSearch: (search: Record<string, unknown>): LoginRedirect => {
+    return {
+      redirect: (search.redirect as string) || "/home",
+    }
+  },
+  beforeLoad: ({ context, search }) => {
     if (context.authCtx.isAuthenticated) {
-      throw redirect({ to: "/home" });
+      throw redirect({ to: search.redirect });
     }
   },
   component: LoginForm,
@@ -41,14 +51,16 @@ function LoginForm() {
     validateInputOnBlur: true,
   });
 
-  const { login } = useAuth();
+  const { doLogin } = useAuth();
   const navigate = useNavigate();
+  const router = useRouter();
+  const search = Route.useSearch();
+
   const handleSubmit = async (values: typeof form.values) => {
     try {
       const { email, password } = values;
-      const user = await login(email, password);
+      const firstLogin = await doLogin(email, password);
 
-      const firstLogin = !user.user_metadata.has_signed_in;
       if (firstLogin) {
         notifications.show({
           withCloseButton: true,
@@ -56,6 +68,9 @@ function LoginForm() {
           title: "Nice to meet you!",
           message: "Please update your password.",
         });
+
+        await router.invalidate();
+        await new Promise((resolve) => setTimeout(resolve, 1));
 
         await navigate({ to: "/changePassword" });
         return;
@@ -68,7 +83,10 @@ function LoginForm() {
         message: "Loading profile information...",
       });
 
-      await navigate({ to: "/home" });
+      await router.invalidate();
+      await new Promise((resolve) => setTimeout(resolve, 1));
+
+      await navigate({ to: search.redirect });
     } catch (error) {
       if (error instanceof Error) {
         console.warn("Error logging in: ", error.message);
@@ -84,6 +102,47 @@ function LoginForm() {
       });
     }
   };
+  // const handleSubmit = async (values: typeof form.values) => {
+  //   try {
+  //     const { email, password } = values;
+  //     const user = await doLogin(email, password);
+
+  //     const firstLogin = !user.user_metadata.has_signed_in;
+  //     if (firstLogin) {
+  //       notifications.show({
+  //         withCloseButton: true,
+  //         color: "green",
+  //         title: "Nice to meet you!",
+  //         message: "Please update your password.",
+  //       });
+
+  //       await navigate({ to: "/changePassword" });
+  //       return;
+  //     }
+
+  //     notifications.show({
+  //       withCloseButton: true,
+  //       color: "green",
+  //       title: "Logged in!",
+  //       message: "Loading profile information...",
+  //     });
+
+  //     await navigate({ to: "/home" });
+  //   } catch (error) {
+  //     if (error instanceof Error) {
+  //       console.warn("Error logging in: ", error.message);
+  //     } else {
+  //       console.warn("Unkown error logging in: ", JSON.stringify(error));
+  //     }
+
+  //     notifications.show({
+  //       withCloseButton: true,
+  //       color: "red",
+  //       title: "Error signing in",
+  //       message: `${(error as Error)?.message || JSON.stringify(error)}`,
+  //     });
+  //   }
+  // };
 
   return (
     <Container size={460} my={50}>

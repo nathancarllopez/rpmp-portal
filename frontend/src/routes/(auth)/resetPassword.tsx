@@ -54,7 +54,7 @@ function ResetPassword() {
       <Title ta="center" my={5}>
         Reset your password
       </Title>
-      <Anchor component={Link} to="/login">
+      <Anchor component={Link} to="/">
         <Subtitle>Go back to the login page</Subtitle>
       </Anchor>
 

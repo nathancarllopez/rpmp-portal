@@ -55,7 +55,7 @@ export const Route = createFileRoute("/_dashboard")({
         await logout();
 
         throw redirect({
-          to: "/login",
+          to: "/",
           search: {
             redirect: location.href,
           },
@@ -70,7 +70,7 @@ export const Route = createFileRoute("/_dashboard")({
       message: "You must be logged in to access this page.",
     });
     throw redirect({
-      to: "/login",
+      to: "/",
       search: {
         redirect: location.href,
       },

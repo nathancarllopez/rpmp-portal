@@ -10,7 +10,7 @@ export const Route = createFileRoute("/(auth)/loggedOut")({
 });
 
 function RouteComponent() {
-  const navigateTo = "/login";
+  const navigateTo = "/";
   const remaining = useCountdown(5, navigateTo);
 
   return (
@@ -18,7 +18,7 @@ function RouteComponent() {
       <Title my={5}>Logged out</Title>
       <Subtitle>Redirecting to the login page in {remaining}</Subtitle>
 
-      <Anchor component={Link} c="dimmed" size="sm" to="/login">
+      <Anchor component={Link} c="dimmed" size="sm" to="/">
         <Center inline>
           <IconArrowLeft size={12} stroke={1.5} />
           <Box ml={5}>Back to the login page</Box>

@@ -18,7 +18,6 @@ import { Route as DashboardSettingsImport } from './routes/_dashboard/settings'
 import { Route as DashboardHomeImport } from './routes/_dashboard/home'
 import { Route as DashboardFinancesImport } from './routes/_dashboard/finances'
 import { Route as authResetPasswordImport } from './routes/(auth)/resetPassword'
-import { Route as authLoginImport } from './routes/(auth)/login'
 import { Route as authLoggedOutImport } from './routes/(auth)/loggedOut'
 import { Route as authChangePasswordImport } from './routes/(auth)/changePassword'
 import { Route as DashboardProfileRouteImport } from './routes/_dashboard/profile/route'
@@ -67,12 +66,6 @@ const DashboardFinancesRoute = DashboardFinancesImport.update({
 const authResetPasswordRoute = authResetPasswordImport.update({
   id: '/(auth)/resetPassword',
   path: '/resetPassword',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const authLoginRoute = authLoginImport.update({
-  id: '/(auth)/login',
-  path: '/login',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -162,13 +155,6 @@ declare module '@tanstack/react-router' {
       path: '/loggedOut'
       fullPath: '/loggedOut'
       preLoaderRoute: typeof authLoggedOutImport
-      parentRoute: typeof rootRoute
-    }
-    '/(auth)/login': {
-      id: '/(auth)/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof authLoginImport
       parentRoute: typeof rootRoute
     }
     '/(auth)/resetPassword': {
@@ -278,7 +264,6 @@ export interface FileRoutesByFullPath {
   '/profile': typeof DashboardProfileRouteRouteWithChildren
   '/changePassword': typeof authChangePasswordRoute
   '/loggedOut': typeof authLoggedOutRoute
-  '/login': typeof authLoginRoute
   '/resetPassword': typeof authResetPasswordRoute
   '/finances': typeof DashboardFinancesRoute
   '/home': typeof DashboardHomeRoute
@@ -295,7 +280,6 @@ export interface FileRoutesByTo {
   '/orders': typeof DashboardOrdersRouteRoute
   '/changePassword': typeof authChangePasswordRoute
   '/loggedOut': typeof authLoggedOutRoute
-  '/login': typeof authLoginRoute
   '/resetPassword': typeof authResetPasswordRoute
   '/finances': typeof DashboardFinancesRoute
   '/home': typeof DashboardHomeRoute
@@ -314,7 +298,6 @@ export interface FileRoutesById {
   '/_dashboard/profile': typeof DashboardProfileRouteRouteWithChildren
   '/(auth)/changePassword': typeof authChangePasswordRoute
   '/(auth)/loggedOut': typeof authLoggedOutRoute
-  '/(auth)/login': typeof authLoginRoute
   '/(auth)/resetPassword': typeof authResetPasswordRoute
   '/_dashboard/finances': typeof DashboardFinancesRoute
   '/_dashboard/home': typeof DashboardHomeRoute
@@ -334,7 +317,6 @@ export interface FileRouteTypes {
     | '/profile'
     | '/changePassword'
     | '/loggedOut'
-    | '/login'
     | '/resetPassword'
     | '/finances'
     | '/home'
@@ -350,7 +332,6 @@ export interface FileRouteTypes {
     | '/orders'
     | '/changePassword'
     | '/loggedOut'
-    | '/login'
     | '/resetPassword'
     | '/finances'
     | '/home'
@@ -367,7 +348,6 @@ export interface FileRouteTypes {
     | '/_dashboard/profile'
     | '/(auth)/changePassword'
     | '/(auth)/loggedOut'
-    | '/(auth)/login'
     | '/(auth)/resetPassword'
     | '/_dashboard/finances'
     | '/_dashboard/home'
@@ -384,7 +364,6 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRouteWithChildren
   authChangePasswordRoute: typeof authChangePasswordRoute
   authLoggedOutRoute: typeof authLoggedOutRoute
-  authLoginRoute: typeof authLoginRoute
   authResetPasswordRoute: typeof authResetPasswordRoute
 }
 
@@ -393,7 +372,6 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRouteWithChildren,
   authChangePasswordRoute: authChangePasswordRoute,
   authLoggedOutRoute: authLoggedOutRoute,
-  authLoginRoute: authLoginRoute,
   authResetPasswordRoute: authResetPasswordRoute,
 }
 
@@ -411,7 +389,6 @@ export const routeTree = rootRoute
         "/_dashboard",
         "/(auth)/changePassword",
         "/(auth)/loggedOut",
-        "/(auth)/login",
         "/(auth)/resetPassword"
       ]
     },
@@ -447,9 +424,6 @@ export const routeTree = rootRoute
     },
     "/(auth)/loggedOut": {
       "filePath": "(auth)/loggedOut.tsx"
-    },
-    "/(auth)/login": {
-      "filePath": "(auth)/login.tsx"
     },
     "/(auth)/resetPassword": {
       "filePath": "(auth)/resetPassword.tsx"

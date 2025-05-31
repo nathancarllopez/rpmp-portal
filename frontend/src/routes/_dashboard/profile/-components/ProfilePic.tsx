@@ -17,9 +17,16 @@ interface ProfilePicProps {
 
 export default function ProfilePic({ showUpload, userId }: ProfilePicProps) {
   const queryClient = useQueryClient();
-  const { data } = useProfilePic(userId);
+  const { isPending, data, error } = useProfilePic(userId);
 
-  const imgSrc = data || MissingImage;
+  if (error) {
+    console.warn("Could not fetch profile pic for this userId:")
+    console.warn(userId);
+
+    throw error;
+  }
+
+  const imgSrc = isPending ? MissingImage : data;
 
   const handlePicDrop = async (files: FileWithPath[]) => {
     try {

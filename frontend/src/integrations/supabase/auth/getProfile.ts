@@ -2,7 +2,9 @@ import { supabase } from "../client";
 import type { Profile } from "../types/types";
 import snakeToCamel from "../util/snakeToCamel";
 
-export default async function getProfile(userId: string): Promise<Profile> {
+export default async function getProfile(userId: string | undefined): Promise<Profile | null> {
+  if (!userId) return null;
+
   const { data, error } = await supabase
     .from("profiles")
     .select()

@@ -16,73 +16,44 @@ import {
 } from "@mantine/core";
 import Navbar from "./-components/Navbar.tsx";
 import ColorSchemeToggle from "./-components/ColorSchemeToggle.tsx";
-import getSession from "@/integrations/supabase/auth/getSession.ts";
-import getProfile from "@/integrations/supabase/auth/getProfile.ts";
+import { useAuth } from "@/integrations/supabase/auth/AuthProvider.tsx";
+import SkeletonDashboard from "./-components/SkeletonDashboard.tsx";
 
 export const Route = createFileRoute("/_dashboard")({
-  beforeLoad: async ({ context }) => {
-    const { isAuthenticated, setProfile, logout } = context.authCtx;
+  beforeLoad: ({ context, location }) => {
+    console.log('before load start');
 
-    if (isAuthenticated) return;
+    if (!context.authCtx.isAuthenticated) {
+      notifications.show({
+        withCloseButton: true,
+        color: "red",
+        title: "Authentication Required",
+        message: "You must be logged in to access this page.",
+      });
 
-    const session = await getSession();
-
-    if (session) {
-      try {
-        const userId = session.user.id;
-        const profile = await getProfile(userId);
-
-        setProfile(profile);
-
-        return;
-      } catch (error) {
-        if (error instanceof Error) {
-          console.warn("Error checking authentication: ", error.message);
-        } else {
-          console.warn(
-            "Unkown error checking authentication: ",
-            JSON.stringify(error)
-          );
+      throw redirect({
+        to: '/',
+        search: {
+          redirect: location.href
         }
-
-        notifications.show({
-          withCloseButton: true,
-          color: "red",
-          title: "Error logging in",
-          message: "You'll be logged out and sent back to the login page...",
-        });
-
-        await logout();
-
-        throw redirect({
-          to: "/",
-          search: {
-            redirect: location.href,
-          },
-        });
-      }
+      })
     }
-
-    notifications.show({
-      withCloseButton: true,
-      color: "red",
-      title: "Authentication Required",
-      message: "You must be logged in to access this page.",
-    });
-    throw redirect({
-      to: "/",
-      search: {
-        redirect: location.href,
-      },
-    });
   },
   component: Dashboard,
 });
 
 function Dashboard() {
+  console.log('dashboard')
+
   const [mobileOpened, { toggle: toggleMobile, close: closeOnMobile }] =
     useDisclosure(false);
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+
+  const { showSkeleton } = useAuth();
+
+  if (showSkeleton) {
+    return <SkeletonDashboard/>
+  }
 
   return (
     <AppShell

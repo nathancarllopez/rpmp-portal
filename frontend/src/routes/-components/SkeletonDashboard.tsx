@@ -15,6 +15,7 @@ import ColorSchemeToggle from "./ColorSchemeToggle";
 import { IconChevronRight } from "@tabler/icons-react";
 
 export default function SkeletonDashboard() {
+  console.log('skeleton');
   return (
     <AppShell
       header={{ height: 90 }}

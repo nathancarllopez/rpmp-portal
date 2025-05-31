@@ -17,7 +17,7 @@ import {
   IconSettings,
   IconToolsKitchen3,
 } from "@tabler/icons-react";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import NavLinkLabel from "./NavLinkLabel.tsx";
 import { useAuth } from "@/integrations/supabase/auth/AuthProvider.tsx";
 import useProfilePic from "@/integrations/tanstack-query/useProfilePic.ts";
@@ -59,7 +59,8 @@ export default function Navbar({
 }: {
   closeOnMobile: () => void;
 }) {
-  const { profile, logout } = useAuth();
+  const router = useRouter();
+  const { profile, doLogout } = useAuth();
   const { data } = useProfilePic(profile?.userId);
 
   const navLinks = ALL_NAV_LINKS.filter((link) =>
@@ -74,7 +75,8 @@ export default function Navbar({
       message: "See you next time!",
     });
 
-    await logout();
+    await doLogout();
+    await router.invalidate();
   }
 
   return (

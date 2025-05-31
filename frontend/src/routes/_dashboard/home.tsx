@@ -1,4 +1,4 @@
-import { Anchor, Group, Image, Paper, Stack } from "@mantine/core";
+import { Anchor, Group, Image, Paper, Stack, Title } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_dashboard/home")({
@@ -7,15 +7,18 @@ export const Route = createFileRoute("/_dashboard/home")({
 
 function RouteComponent() {
   return (
-    <Group>
-      <Image w={'auto'} fit="contain" src={"/logo.png"} alt="Logo" />
-
+    <Stack>
+      <Group justify="space-between">
+        <Title>Welcome to the RPMP Dashboard</Title>
+        <Image w={{ base: 50, sm: 100 }} fit="contain" src={"/logo.png"} alt="Logo" />
+      </Group>
+      
       <Paper>
-        <Stack>
+        <Group>
           <Anchor>Quick Link 1</Anchor>
           <Anchor>Quick Link 2</Anchor>
-        </Stack>
+        </Group>
       </Paper>
-    </Group>
+    </Stack>
   );
 }

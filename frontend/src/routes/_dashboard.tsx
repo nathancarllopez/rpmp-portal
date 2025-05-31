@@ -86,7 +86,7 @@ function Dashboard() {
             mr={"auto"}
             onClick={closeOnMobile}
           >
-            <Title visibleFrom="sm">RPMP Portal</Title>
+            <Title visibleFrom="sm">RPMP Dashboard</Title>
             <Title hiddenFrom="sm">RPMP</Title>
           </UnstyledButton>
 

@@ -6,14 +6,24 @@ export type UpdateSpec = Record<string, any>;
 export default async function updateTableRows(
   tableName: TableName,
   updateSpec: UpdateSpec,
-  idsToUpdate: number[]
+  idsToUpdate?: number[]
 ) {
-  const { data, error } = await supabase
-    .from(tableName)
-    .update(updateSpec)
-    .in("id", idsToUpdate);
+  let updateQuery = supabase.from(tableName).update(updateSpec);
 
-  if (error) throw error;
+  if (idsToUpdate && idsToUpdate.length > 0) {
+    updateQuery = updateQuery.in("id", idsToUpdate);
+  } else {
+    updateQuery.gt("id", 0);
+  }
+
+  const { data, error } = await updateQuery;
+
+  if (error) {
+    console.warn(`Failed to update ${tableName}`);
+    console.warn(error.message);
+    
+    throw error;
+  }
 
   return data;
 }

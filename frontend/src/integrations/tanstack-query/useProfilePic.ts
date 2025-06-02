@@ -15,15 +15,23 @@ async function getProfilePicUrl(
     throw new Error("UserId is required");
   }
 
-  // List all files in profilePics/
   const { data, error } = await supabase.storage
     .from("avatars")
     .list("profilePics", {
       search: `${userId}`,
     });
 
-  if (error || !data || data.length === 0) {
-    throw new Error("Could not find profile picture.");
+  if (error) {
+    console.warn("Supabase error listing profile pictures:")
+    console.warn(error.message);
+
+    throw error;
+  } else if (!data) {
+    throw new Error("Supabase didn't return any data from profilePics storage bucket")
+  } else if (!Array.isArray(data)) {
+    throw new Error(`Supabase did not return an array: ${JSON.stringify(data)}`)
+  } else if (data.length === 0) {
+    throw new Error("No profile pictures returned from supabase") // This is the error that is occurring
   }
 
   const profilePic = data.find((file) => file.name.startsWith(userId));

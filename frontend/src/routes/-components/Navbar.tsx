@@ -37,6 +37,7 @@ const ALL_NAV_LINKS: NavLinkInfo[] = [
     icon: <IconToolsKitchen3 />,
     href: "/orders",
     hasPermission: ["admin", 'owner', "manager"],
+    hasPermission: ["admin", "owner", "manager"],
   },
   {
     id: "timecards",

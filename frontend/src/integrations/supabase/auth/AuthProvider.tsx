@@ -1,12 +1,13 @@
-import type { Session } from "@supabase/supabase-js";
 import type { Profile } from "../types/types";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext } from "react";
 import { supabase } from "../client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import getProfile from "./getProfile";
+import useSession from "./useSession";
 
 export interface AuthContext {
   profile: Profile | null;
+  fetchingSession: boolean;
   isAuthenticated: boolean;
   showSkeleton: boolean;
   refreshProfile: () => Promise<void>;
@@ -16,34 +17,16 @@ export interface AuthContext {
 
 const AuthContext = createContext<AuthContext | null>(null);
 
-const storageKey = "stored-session";
-
-function getStoredSession(): Session | null {
-  const sessionStr = localStorage.getItem(storageKey);
-  if (sessionStr) {
-    return JSON.parse(sessionStr) as Session;
-  }
-  return null;
-}
-
-function setStoredSession(session: Session | null) {
-  if (session) {
-    localStorage.setItem(storageKey, JSON.stringify(session));
-  } else {
-    localStorage.removeItem(storageKey);
-  }
-}
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
-  const [session, setSession] = useState<Session | null>(() =>
-    getStoredSession()
-  );
+  const { session, fetchingSession } = useSession();
   const userId = session?.user.id;
+  console.log('session:', session);
 
   const { data, error } = useQuery({
     queryKey: ["profile", userId],
     queryFn: () => getProfile(userId),
+    enabled: !!userId,
   });
 
   if (error) {
@@ -53,14 +36,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     throw error;
   }
 
-  const isAuthenticated = !!session;
   const profile = data || null;
+  const isAuthenticated = !fetchingSession && !!session;
   const showSkeleton = isAuthenticated && !profile;
 
-  const refreshProfile = () =>
-    queryClient.invalidateQueries({
-      queryKey: ["profile", userId],
-    });
+  const refreshProfile = () => queryClient.invalidateQueries({
+    queryKey: ["profile", userId],
+  });
 
   const doLogin = async (email: string, password: string): Promise<boolean> => {
     const {
@@ -83,9 +65,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       throw new Error("User object has no id prop");
     }
 
-    setSession(session);
-    setStoredSession(session);
-
     const firstLogin = !session.user.user_metadata.has_signed_in;
     return firstLogin;
   };
@@ -98,15 +77,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       throw error;
     }
-
-    setSession(null);
-    setStoredSession(null);
   };
 
   return (
     <AuthContext.Provider
       value={{
         profile,
+        fetchingSession,
         isAuthenticated,
         showSkeleton,
         refreshProfile,

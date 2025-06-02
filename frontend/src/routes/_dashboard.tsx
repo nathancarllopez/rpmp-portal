@@ -18,12 +18,16 @@ import Navbar from "./-components/Navbar.tsx";
 import ColorSchemeToggle from "./-components/ColorSchemeToggle.tsx";
 import { useAuth } from "@/integrations/supabase/auth/AuthProvider.tsx";
 import SkeletonDashboard from "./-components/SkeletonDashboard.tsx";
+import LoadingScreen from "./-components/LoadingScreen.tsx";
 
 export const Route = createFileRoute("/_dashboard")({
   beforeLoad: ({ context, location }) => {
     console.log('before load start');
+    const { isAuthenticated, fetchingSession } = context.authCtx;
 
-    if (!context.authCtx.isAuthenticated) {
+    if (fetchingSession) return;
+
+    if (!isAuthenticated) {
       notifications.show({
         withCloseButton: true,
         color: "red",
@@ -49,7 +53,11 @@ function Dashboard() {
     useDisclosure(false);
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
-  const { showSkeleton } = useAuth();
+  const { showSkeleton, fetchingSession } = useAuth();
+
+  if (fetchingSession) {
+    return <LoadingScreen/>
+  }
 
   if (showSkeleton) {
     return <SkeletonDashboard/>

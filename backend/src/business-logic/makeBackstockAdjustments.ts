@@ -40,7 +40,7 @@ export default async function makeBackstockAdjustments(
           weightOz: weight,
           weightLbOz: getLbOzWeight(weight),
           backstockWeight: 0,
-          cookedWeightOz: weight * shrinkMultiplier,
+          cookedWeightOz: Number((weight * shrinkMultiplier).toFixed(2)),
         });
         continue;
       }
@@ -55,12 +55,14 @@ export default async function makeBackstockAdjustments(
         weightOz: adjWeight,
         weightLbOz: getLbOzWeight(adjWeight),
         backstockWeight: weight - adjWeight,
-        cookedWeightOz: adjWeight * shrinkMultiplier,
+        cookedWeightOz: Number((adjWeight * shrinkMultiplier).toFixed(2)),
       });
     }
   }
 
-  await updateTableRows("backstock", { available: false }, usedBackstockIds);
+  if (false) {
+    await updateTableRows("backstock", { available: false }, usedBackstockIds);
+  }
 
   return { meals };
 }

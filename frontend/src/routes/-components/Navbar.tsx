@@ -36,7 +36,6 @@ const ALL_NAV_LINKS: NavLinkInfo[] = [
     label: "Orders",
     icon: <IconToolsKitchen3 />,
     href: "/orders",
-    hasPermission: ["admin", 'owner', "manager"],
     hasPermission: ["admin", "owner", "manager"],
   },
   {

@@ -36,21 +36,21 @@ const ALL_NAV_LINKS: NavLinkInfo[] = [
     label: "Orders",
     icon: <IconToolsKitchen3 />,
     href: "/orders",
-    hasPermission: ["admin", "manager"],
+    hasPermission: ["admin", "owner", "manager"],
   },
   {
     id: "timecards",
     label: "Timecards",
     icon: <IconReceiptDollar />,
     href: "/timecards",
-    hasPermission: ["admin", "manager", "employee"],
+    hasPermission: ["admin", "owner", "manager", "employee"],
   },
   {
     id: "finances",
     label: "Finances",
     icon: <IconBooks />,
     href: "/finances",
-    hasPermission: ["admin"],
+    hasPermission: ["admin", "owner",],
   },
 ];
 

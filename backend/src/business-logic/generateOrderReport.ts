@@ -1,4 +1,4 @@
-import PDFDocumentWithTables from "pdfkit-table";
+import PDFDocument from "pdfkit-table";
 import { Meal, Order, OrderError, OrderStatistics } from "./types";
 
 export default function generateOrderReport(
@@ -6,8 +6,8 @@ export default function generateOrderReport(
   stats: OrderStatistics,
   meals: Meal[],
   orderErrors: OrderError[]
-): PDFDocumentWithTables {
-  const report = new PDFDocumentWithTables({
+): PDFDocument {
+  const report = new PDFDocument({
     layout: "landscape",
   });
 
@@ -16,19 +16,18 @@ export default function generateOrderReport(
     report.addPage();
   }
 
-  addSummary(report, stats);
+  addOrders(report, orders);
   report.addPage();
   addMeals(report, meals);
   report.addPage();
-  addOrders(report, orders);
+  addSummary(report, stats);
 
   return report;
 }
 
-function addErrors(report: PDFDocumentWithTables, orderErrors: OrderError[]) {
+function addErrors(report: PDFDocument, orderErrors: OrderError[]) {
   // Title
   report.fontSize(16).text("Errors", { align: "center" });
-  report.moveDown();
 
   // Date in subtitle
   report
@@ -54,10 +53,63 @@ function addErrors(report: PDFDocumentWithTables, orderErrors: OrderError[]) {
   });
 }
 
-function addSummary(report: PDFDocumentWithTables, stats: OrderStatistics) {
+function addMeals(report: PDFDocument, meals: Meal[]) {
   // Title
-  report.fontSize(16).text("Summary", { align: "center" });
+  report.fontSize(16).text("Summary (Meals)", { align: "center" });
+
+  // Date in subtitle
+  report
+    .fontSize(10)
+    .text(new Date().toLocaleDateString(), { align: "center" });
   report.moveDown();
+  report.fontSize(12);
+
+  // Meals
+  report.table(
+    {
+      headers: [
+        { label: "Protein", property: "protein", width: 100 },
+        { label: "Flavor", property: "flavor", width: 100 },
+        {
+          label: "Weight (oz)",
+          property: "weightOz",
+          width: 100,
+          align: "right",
+        },
+        {
+          label: "Weight (lb-oz)",
+          property: "weightLbOz",
+          width: 100,
+          align: "right",
+        },
+        {
+          label: "Cooked Weight (oz)",
+          property: "cookedWeightOz",
+          width: 100,
+          align: "right",
+        },
+        {
+          label: "Backstock (oz)",
+          property: "backstockWeight",
+          width: 100,
+          align: "right",
+        },
+      ],
+      datas: meals.map((meal) => {
+        return {
+          ...meal,
+          weightOz: `${meal.weightOz} oz`,
+          backstockWeight: `${meal.backstockWeight} oz`,
+          cookedWeightOz: `${meal.cookedWeightOz} oz`,
+        };
+      }),
+    },
+  );
+}
+
+function addSummary(report: PDFDocument, stats: OrderStatistics) {
+  // Title
+  report.fontSize(16).text("Sara's Numbers (Summary)", { align: "center" });
 
   // Date in subtitle
   report
@@ -112,66 +164,9 @@ function addSummary(report: PDFDocumentWithTables, stats: OrderStatistics) {
   );
 }
 
-function addMeals(report: PDFDocumentWithTables, meals: Meal[]) {
+function addOrders(report: PDFDocument, orders: Order[]) {
   // Title
-  report.fontSize(16).text("Meals", { align: "center" });
-  report.moveDown();
-
-  // Date in subtitle
-  report
-    .fontSize(10)
-    .text(new Date().toLocaleDateString(), { align: "center" });
-  report.moveDown();
-  report.fontSize(12);
-
-  // Ingredients
-  report.table(
-    {
-      headers: [
-        { label: "Protein", property: "protein", width: 100 },
-        { label: "Flavor", property: "flavor", width: 100 },
-        {
-          label: "Weight (oz)",
-          property: "weightOz",
-          width: 100,
-          align: "right",
-        },
-        {
-          label: "Weight (lb-oz)",
-          property: "weightLbOz",
-          width: 100,
-          align: "right",
-        },
-        {
-          label: "Cooked Weight (lb-oz)",
-          property: "cookedWeightOz",
-          width: 100,
-          align: "right",
-        },
-        {
-          label: "Backstock (oz)",
-          property: "backstockWeight",
-          width: 100,
-          align: "right",
-        },
-      ],
-      datas: meals.map((meal) => {
-        return {
-          ...meal,
-          weightOz: `${meal.weightOz} oz`,
-          backstockWeight: `${meal.backstockWeight} oz`,
-          cookedWeightOz: `${meal.cookedWeightOz} oz`,
-        };
-      }),
-    },
-    {}
-  );
-}
-
-function addOrders(report: PDFDocumentWithTables, orders: Order[]) {
-  // Title
-  report.fontSize(16).text("Orders", { align: "center" });
-  report.moveDown();
+  report.fontSize(16).text("Data (Orders)", { align: "center" });
 
   // Date in subtitle
   report
@@ -186,8 +181,8 @@ function addOrders(report: PDFDocumentWithTables, orders: Order[]) {
       { label: "Full Name", property: "fullName", width: 100 },
       { label: "Item Name", property: "itemName", width: 300 },
       { label: "Quantity", property: "quantity", width: 50, align: "center" },
-      { label: "Protein", property: "protein", width: 75 },
-      { label: "Flavor", property: "flavor", width: 150 },
+      { label: "Protein", property: "proteinLabel", width: 75 },
+      { label: "Flavor", property: "flavorLabel", width: 150 },
     ],
     datas: orders.map((order) => {
       return {
@@ -198,4 +193,4 @@ function addOrders(report: PDFDocumentWithTables, orders: Order[]) {
   });
 }
 
-function addCookSheet(report: PDFDocumentWithTables) {}
+function addCookSheet(report: PDFDocument) {}

@@ -11,6 +11,7 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as TestImport } from './routes/test'
 import { Route as DashboardImport } from './routes/_dashboard'
 import { Route as IndexImport } from './routes/index'
 import { Route as DashboardTimecardsImport } from './routes/_dashboard/timecards'
@@ -27,6 +28,12 @@ import { Route as DashboardProfileSearchImport } from './routes/_dashboard/profi
 import { Route as DashboardProfileCreateImport } from './routes/_dashboard/profile/create'
 
 // Create/Update Routes
+
+const TestRoute = TestImport.update({
+  id: '/test',
+  path: '/test',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const DashboardRoute = DashboardImport.update({
   id: '/_dashboard',
@@ -127,6 +134,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof DashboardImport
+      parentRoute: typeof rootRoute
+    }
+    '/test': {
+      id: '/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof TestImport
       parentRoute: typeof rootRoute
     }
     '/_dashboard/orders': {
@@ -260,6 +274,7 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '': typeof DashboardRouteWithChildren
+  '/test': typeof TestRoute
   '/orders': typeof DashboardOrdersRouteRoute
   '/profile': typeof DashboardProfileRouteRouteWithChildren
   '/changePassword': typeof authChangePasswordRoute
@@ -277,6 +292,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '': typeof DashboardRouteWithChildren
+  '/test': typeof TestRoute
   '/orders': typeof DashboardOrdersRouteRoute
   '/changePassword': typeof authChangePasswordRoute
   '/loggedOut': typeof authLoggedOutRoute
@@ -294,6 +310,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/_dashboard': typeof DashboardRouteWithChildren
+  '/test': typeof TestRoute
   '/_dashboard/orders': typeof DashboardOrdersRouteRoute
   '/_dashboard/profile': typeof DashboardProfileRouteRouteWithChildren
   '/(auth)/changePassword': typeof authChangePasswordRoute
@@ -313,6 +330,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | ''
+    | '/test'
     | '/orders'
     | '/profile'
     | '/changePassword'
@@ -329,6 +347,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | ''
+    | '/test'
     | '/orders'
     | '/changePassword'
     | '/loggedOut'
@@ -344,6 +363,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_dashboard'
+    | '/test'
     | '/_dashboard/orders'
     | '/_dashboard/profile'
     | '/(auth)/changePassword'
@@ -362,6 +382,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRouteWithChildren
+  TestRoute: typeof TestRoute
   authChangePasswordRoute: typeof authChangePasswordRoute
   authLoggedOutRoute: typeof authLoggedOutRoute
   authResetPasswordRoute: typeof authResetPasswordRoute
@@ -370,6 +391,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRouteWithChildren,
+  TestRoute: TestRoute,
   authChangePasswordRoute: authChangePasswordRoute,
   authLoggedOutRoute: authLoggedOutRoute,
   authResetPasswordRoute: authResetPasswordRoute,
@@ -387,6 +409,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/_dashboard",
+        "/test",
         "/(auth)/changePassword",
         "/(auth)/loggedOut",
         "/(auth)/resetPassword"
@@ -405,6 +428,9 @@ export const routeTree = rootRoute
         "/_dashboard/settings",
         "/_dashboard/timecards"
       ]
+    },
+    "/test": {
+      "filePath": "test.tsx"
     },
     "/_dashboard/orders": {
       "filePath": "_dashboard/orders/route.tsx",

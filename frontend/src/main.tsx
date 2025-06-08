@@ -1,9 +1,10 @@
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "@mantine/dropzone/styles.css";
+import '@mantine/dates/styles.css';
 import { theme } from "@/theme.ts";
-import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
+import { MantineProvider } from "@mantine/core";
 
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
@@ -41,7 +42,7 @@ function RouteWrapper() {
   const authCtx = useAuth();
 
   return (
-      <RouterProvider router={router} context={{ authCtx }} />
+    <RouterProvider router={router} context={{ authCtx }} />
   );
 }
 

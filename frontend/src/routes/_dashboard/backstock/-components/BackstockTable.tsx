@@ -1,4 +1,4 @@
-import { Checkbox, ScrollArea, Table, useMantineTheme } from "@mantine/core";
+import { Badge, Checkbox, ScrollArea, Table } from "@mantine/core";
 import { useMemo, useState } from "react";
 import cx from "clsx";
 import classes from "./BackstockTable.module.css";
@@ -35,7 +35,6 @@ export default function BackstockTable({
   const [sortBy, setSortBy] = useState<keyof BackstockRow>("available");
   const [reverseSort, setReverseSort] = useState(false);
   const atSmallBp = useMediaQuery("(min-width: 48em)");
-  const theme = useMantineTheme();
 
   const sortedData = useMemo(() => {
     // Helper to get the value for a given sort key
@@ -104,14 +103,14 @@ export default function BackstockTable({
   };
 
   // To do: Add this info directly to supabase proteins column
-  const rowColors: Record<string, [string, number, "black" | "white"]> = {
-    "Beef Bison": ["blue", 3, "black"],
-    Chicken: ["grape", 3, "black"],
-    "Mahi Mahi": ["orange", 2, "black"],
-    Salmon: ["grape", 2, "black"],
-    Shrimp: ["red", 5, "black"],
-    Sirloin: ["blue", 5, "black"],
-    Turkey: ["green", 2, "black"],
+  const rowColors: Record<string, [string, number]> = {
+    "Beef Bison": ["blue", 3],
+    Chicken: ["grape", 3],
+    "Mahi Mahi": ["orange", 2],
+    Salmon: ["grape", 2],
+    Shrimp: ["red", 5],
+    Sirloin: ["blue", 5],
+    Turkey: ["green", 2],
   };
 
   const headers = BACKSTOCK_HEADERS.map((header) => (
@@ -127,19 +126,24 @@ export default function BackstockTable({
 
   const rows = sortedData.map((row) => {
     const isSelected = selectedIds.has(row.id);
-    const [rowColor, shade, textColor] = rowColors[row.protein];
+    const [rowColor, shade] = rowColors[row.protein];
     return (
       <Table.Tr
         key={row.id}
-        c={textColor}
-        bg={theme.colors[rowColor][shade]}
-        className={cx({ [classes.rowSelected]: isSelected || !row.available })}
+        className={cx({ [classes.rowSelected]: isSelected })}
       >
         <Table.Td>
           <Checkbox checked={isSelected} onChange={() => toggleRow(row.id)} />
         </Table.Td>
-        <Table.Td>{row.protein}</Table.Td>
-        <Table.Td>{row.flavor}</Table.Td>
+        <Table.Td>
+          <Badge
+            color={`${rowColor}.${shade}`}
+            autoContrast
+          >
+            {row.protein}
+          </Badge>
+        </Table.Td>
+        <Table.Td px={'md'}>{row.flavor}</Table.Td>
         <Table.Td>{row.weight} oz</Table.Td>
         {atSmallBp && (
           <>

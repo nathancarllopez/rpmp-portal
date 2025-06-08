@@ -7,18 +7,22 @@ import { useMediaQuery } from "@mantine/hooks";
 import Subtitle from "@/routes/-components/Subtitle";
 import uploadOrder from "@/api/uploadOrder";
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_dashboard/orders")({
   component: Orders,
 });
 
 function Orders() {
+  const queryClient = useQueryClient();
   const atSmallBp = useMediaQuery("(min-width: 48em)");
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+
 
   const handleFileDrop = async (files: FileWithPath[]) => {
     const pdfBlob = await uploadOrder(files[0]);
     setPdfUrl(URL.createObjectURL(pdfBlob));
+    queryClient.invalidateQueries({ queryKey: ['backstock'] })
   };
 
   return (

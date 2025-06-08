@@ -28,7 +28,7 @@ export default function useSession() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("auth event:", event);
-      console.log("session:", session);
+      // console.log("session:", session);
 
       setSession(session);
     });

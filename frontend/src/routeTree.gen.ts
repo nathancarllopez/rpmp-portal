@@ -16,6 +16,7 @@ import { Route as DashboardImport } from './routes/_dashboard'
 import { Route as IndexImport } from './routes/index'
 import { Route as DashboardTimecardsImport } from './routes/_dashboard/timecards'
 import { Route as DashboardSettingsImport } from './routes/_dashboard/settings'
+import { Route as DashboardMenuImport } from './routes/_dashboard/menu'
 import { Route as DashboardHomeImport } from './routes/_dashboard/home'
 import { Route as DashboardFinancesImport } from './routes/_dashboard/finances'
 import { Route as authResetPasswordImport } from './routes/(auth)/resetPassword'
@@ -23,6 +24,7 @@ import { Route as authLoggedOutImport } from './routes/(auth)/loggedOut'
 import { Route as authChangePasswordImport } from './routes/(auth)/changePassword'
 import { Route as DashboardProfileRouteImport } from './routes/_dashboard/profile/route'
 import { Route as DashboardOrdersRouteImport } from './routes/_dashboard/orders/route'
+import { Route as DashboardBackstockRouteImport } from './routes/_dashboard/backstock/route'
 import { Route as DashboardProfileIndexImport } from './routes/_dashboard/profile/index'
 import { Route as DashboardProfileSearchImport } from './routes/_dashboard/profile/search'
 import { Route as DashboardProfileCreateImport } from './routes/_dashboard/profile/create'
@@ -55,6 +57,12 @@ const DashboardTimecardsRoute = DashboardTimecardsImport.update({
 const DashboardSettingsRoute = DashboardSettingsImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
+const DashboardMenuRoute = DashboardMenuImport.update({
+  id: '/menu',
+  path: '/menu',
   getParentRoute: () => DashboardRoute,
 } as any)
 
@@ -100,6 +108,12 @@ const DashboardOrdersRouteRoute = DashboardOrdersRouteImport.update({
   getParentRoute: () => DashboardRoute,
 } as any)
 
+const DashboardBackstockRouteRoute = DashboardBackstockRouteImport.update({
+  id: '/backstock',
+  path: '/backstock',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
 const DashboardProfileIndexRoute = DashboardProfileIndexImport.update({
   id: '/',
   path: '/',
@@ -142,6 +156,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/test'
       preLoaderRoute: typeof TestImport
       parentRoute: typeof rootRoute
+    }
+    '/_dashboard/backstock': {
+      id: '/_dashboard/backstock'
+      path: '/backstock'
+      fullPath: '/backstock'
+      preLoaderRoute: typeof DashboardBackstockRouteImport
+      parentRoute: typeof DashboardImport
     }
     '/_dashboard/orders': {
       id: '/_dashboard/orders'
@@ -190,6 +211,13 @@ declare module '@tanstack/react-router' {
       path: '/home'
       fullPath: '/home'
       preLoaderRoute: typeof DashboardHomeImport
+      parentRoute: typeof DashboardImport
+    }
+    '/_dashboard/menu': {
+      id: '/_dashboard/menu'
+      path: '/menu'
+      fullPath: '/menu'
+      preLoaderRoute: typeof DashboardMenuImport
       parentRoute: typeof DashboardImport
     }
     '/_dashboard/settings': {
@@ -250,19 +278,23 @@ const DashboardProfileRouteRouteWithChildren =
   )
 
 interface DashboardRouteChildren {
+  DashboardBackstockRouteRoute: typeof DashboardBackstockRouteRoute
   DashboardOrdersRouteRoute: typeof DashboardOrdersRouteRoute
   DashboardProfileRouteRoute: typeof DashboardProfileRouteRouteWithChildren
   DashboardFinancesRoute: typeof DashboardFinancesRoute
   DashboardHomeRoute: typeof DashboardHomeRoute
+  DashboardMenuRoute: typeof DashboardMenuRoute
   DashboardSettingsRoute: typeof DashboardSettingsRoute
   DashboardTimecardsRoute: typeof DashboardTimecardsRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardBackstockRouteRoute: DashboardBackstockRouteRoute,
   DashboardOrdersRouteRoute: DashboardOrdersRouteRoute,
   DashboardProfileRouteRoute: DashboardProfileRouteRouteWithChildren,
   DashboardFinancesRoute: DashboardFinancesRoute,
   DashboardHomeRoute: DashboardHomeRoute,
+  DashboardMenuRoute: DashboardMenuRoute,
   DashboardSettingsRoute: DashboardSettingsRoute,
   DashboardTimecardsRoute: DashboardTimecardsRoute,
 }
@@ -275,6 +307,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '': typeof DashboardRouteWithChildren
   '/test': typeof TestRoute
+  '/backstock': typeof DashboardBackstockRouteRoute
   '/orders': typeof DashboardOrdersRouteRoute
   '/profile': typeof DashboardProfileRouteRouteWithChildren
   '/changePassword': typeof authChangePasswordRoute
@@ -282,6 +315,7 @@ export interface FileRoutesByFullPath {
   '/resetPassword': typeof authResetPasswordRoute
   '/finances': typeof DashboardFinancesRoute
   '/home': typeof DashboardHomeRoute
+  '/menu': typeof DashboardMenuRoute
   '/settings': typeof DashboardSettingsRoute
   '/timecards': typeof DashboardTimecardsRoute
   '/profile/create': typeof DashboardProfileCreateRoute
@@ -293,12 +327,14 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '': typeof DashboardRouteWithChildren
   '/test': typeof TestRoute
+  '/backstock': typeof DashboardBackstockRouteRoute
   '/orders': typeof DashboardOrdersRouteRoute
   '/changePassword': typeof authChangePasswordRoute
   '/loggedOut': typeof authLoggedOutRoute
   '/resetPassword': typeof authResetPasswordRoute
   '/finances': typeof DashboardFinancesRoute
   '/home': typeof DashboardHomeRoute
+  '/menu': typeof DashboardMenuRoute
   '/settings': typeof DashboardSettingsRoute
   '/timecards': typeof DashboardTimecardsRoute
   '/profile/create': typeof DashboardProfileCreateRoute
@@ -311,6 +347,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_dashboard': typeof DashboardRouteWithChildren
   '/test': typeof TestRoute
+  '/_dashboard/backstock': typeof DashboardBackstockRouteRoute
   '/_dashboard/orders': typeof DashboardOrdersRouteRoute
   '/_dashboard/profile': typeof DashboardProfileRouteRouteWithChildren
   '/(auth)/changePassword': typeof authChangePasswordRoute
@@ -318,6 +355,7 @@ export interface FileRoutesById {
   '/(auth)/resetPassword': typeof authResetPasswordRoute
   '/_dashboard/finances': typeof DashboardFinancesRoute
   '/_dashboard/home': typeof DashboardHomeRoute
+  '/_dashboard/menu': typeof DashboardMenuRoute
   '/_dashboard/settings': typeof DashboardSettingsRoute
   '/_dashboard/timecards': typeof DashboardTimecardsRoute
   '/_dashboard/profile/create': typeof DashboardProfileCreateRoute
@@ -331,6 +369,7 @@ export interface FileRouteTypes {
     | '/'
     | ''
     | '/test'
+    | '/backstock'
     | '/orders'
     | '/profile'
     | '/changePassword'
@@ -338,6 +377,7 @@ export interface FileRouteTypes {
     | '/resetPassword'
     | '/finances'
     | '/home'
+    | '/menu'
     | '/settings'
     | '/timecards'
     | '/profile/create'
@@ -348,12 +388,14 @@ export interface FileRouteTypes {
     | '/'
     | ''
     | '/test'
+    | '/backstock'
     | '/orders'
     | '/changePassword'
     | '/loggedOut'
     | '/resetPassword'
     | '/finances'
     | '/home'
+    | '/menu'
     | '/settings'
     | '/timecards'
     | '/profile/create'
@@ -364,6 +406,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_dashboard'
     | '/test'
+    | '/_dashboard/backstock'
     | '/_dashboard/orders'
     | '/_dashboard/profile'
     | '/(auth)/changePassword'
@@ -371,6 +414,7 @@ export interface FileRouteTypes {
     | '/(auth)/resetPassword'
     | '/_dashboard/finances'
     | '/_dashboard/home'
+    | '/_dashboard/menu'
     | '/_dashboard/settings'
     | '/_dashboard/timecards'
     | '/_dashboard/profile/create'
@@ -421,16 +465,22 @@ export const routeTree = rootRoute
     "/_dashboard": {
       "filePath": "_dashboard.tsx",
       "children": [
+        "/_dashboard/backstock",
         "/_dashboard/orders",
         "/_dashboard/profile",
         "/_dashboard/finances",
         "/_dashboard/home",
+        "/_dashboard/menu",
         "/_dashboard/settings",
         "/_dashboard/timecards"
       ]
     },
     "/test": {
       "filePath": "test.tsx"
+    },
+    "/_dashboard/backstock": {
+      "filePath": "_dashboard/backstock/route.tsx",
+      "parent": "/_dashboard"
     },
     "/_dashboard/orders": {
       "filePath": "_dashboard/orders/route.tsx",
@@ -460,6 +510,10 @@ export const routeTree = rootRoute
     },
     "/_dashboard/home": {
       "filePath": "_dashboard/home.tsx",
+      "parent": "/_dashboard"
+    },
+    "/_dashboard/menu": {
+      "filePath": "_dashboard/menu.tsx",
       "parent": "/_dashboard"
     },
     "/_dashboard/settings": {

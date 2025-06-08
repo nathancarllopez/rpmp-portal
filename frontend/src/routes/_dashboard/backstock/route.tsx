@@ -18,7 +18,10 @@ import { useMemo, useState } from "react";
 import { useDisclosure, useToggle } from "@mantine/hooks";
 import AddNewModal from "./-components/AddNewModal";
 import EditSelectedModal from "./-components/EditSelectedModal";
-import { updateBackstock, type UpdateBackstockInfo } from "@/integrations/supabase/database/updateBackstock";
+import {
+  updateBackstock,
+  type UpdateBackstockInfo,
+} from "@/integrations/supabase/database/updateBackstock";
 import { notifications } from "@mantine/notifications";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -68,7 +71,7 @@ function BackstockRoute() {
         return claimed;
       }, claimed);
     });
-  }
+  };
 
   const handleUndoClick = async () => {
     if (!undoData) {
@@ -88,7 +91,7 @@ function BackstockRoute() {
         withCloseButton: true,
         color: "green",
         title: "Undo Successful",
-        message: "Your edits have been reversed"
+        message: "Your edits have been reversed",
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -134,7 +137,10 @@ function BackstockRoute() {
         <Button w={buttonWidth} onClick={selectAllClaimed}>
           Select All Claimed
         </Button>
-        <Tooltip disabled={selectedIds.size !== 0} label="Select rows you want to edit">
+        <Tooltip
+          disabled={selectedIds.size !== 0}
+          label="Select rows you want to edit"
+        >
           <Button
             w={buttonWidth}
             disabled={selectedIds.size === 0}

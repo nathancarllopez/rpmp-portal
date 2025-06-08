@@ -124,14 +124,11 @@ export default function BackstockTable({
           <Checkbox checked={isSelected} onChange={() => toggleRow(row.id)} />
         </Table.Td>
         <Table.Td>
-          <Badge
-            color={row.displayColor}
-            autoContrast
-          >
+          <Badge color={row.displayColor} autoContrast>
             {row.protein}
           </Badge>
         </Table.Td>
-        <Table.Td px={'md'}>{row.flavor}</Table.Td>
+        <Table.Td px={"md"}>{row.flavor}</Table.Td>
         <Table.Td>{row.weight} oz</Table.Td>
         {atSmallBp && (
           <>

@@ -22,7 +22,6 @@ import LoadingScreen from "./-components/LoadingScreen.tsx";
 
 export const Route = createFileRoute("/_dashboard")({
   beforeLoad: ({ context, location }) => {
-    console.log('before load start');
     const { isAuthenticated, fetchingSession } = context.authCtx;
 
     if (fetchingSession) return;
@@ -47,8 +46,6 @@ export const Route = createFileRoute("/_dashboard")({
 });
 
 function Dashboard() {
-  console.log('dashboard')
-
   const [mobileOpened, { toggle: toggleMobile, close: closeOnMobile }] =
     useDisclosure(false);
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);

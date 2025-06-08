@@ -2,8 +2,8 @@ import type { Profile } from "../types/types";
 import { createContext, useContext } from "react";
 import { supabase } from "../client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import getProfile from "./getProfile";
 import useSession from "./useSession";
+import snakeToCamel from "../util/snakeToCamel";
 
 export interface AuthContext {
   profile: Profile | null;
@@ -21,7 +21,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
   const { session, fetchingSession } = useSession();
   const userId = session?.user.id;
-  console.log('session:', session);
 
   const { data, error } = useQuery({
     queryKey: ["profile", userId],
@@ -102,4 +101,22 @@ export function useAuth() {
     throw new Error("useAuth must be used within AuthProvider");
   }
   return authCtx;
+}
+
+export async function getProfile(userId: string | undefined): Promise<Profile | null> {
+  if (!userId) return null;
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select()
+    .eq("user_id", userId)
+    .single();
+
+  if (error) {
+    console.log(`Failed to fetch profile for this user id: ${userId}`)
+    console.log("error", error.message, error.code);
+    throw error
+  }
+
+  return snakeToCamel(data) as Profile;
 }

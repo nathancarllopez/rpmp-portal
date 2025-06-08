@@ -13,8 +13,10 @@ import {
   IconBooks,
   IconChevronRight,
   IconLogout2,
+  IconMeat,
   IconReceiptDollar,
   IconSettings,
+  IconSnowflake,
   IconToolsKitchen3,
 } from "@tabler/icons-react";
 import { Link, useRouter } from "@tanstack/react-router";
@@ -39,6 +41,13 @@ const ALL_NAV_LINKS: NavLinkInfo[] = [
     hasPermission: ["admin", "owner", "manager"],
   },
   {
+    id: "backstock",
+    label: "Backstock",
+    icon: <IconSnowflake />,
+    href: "/backstock",
+    hasPermission: ["admin", "owner", "manager"],
+  },
+  {
     id: "timecards",
     label: "Timecards",
     icon: <IconReceiptDollar />,
@@ -50,6 +59,13 @@ const ALL_NAV_LINKS: NavLinkInfo[] = [
     label: "Finances",
     icon: <IconBooks />,
     href: "/finances",
+    hasPermission: ["admin", 'owner'],
+  },
+  {
+    id: "menu",
+    label: "Menu",
+    icon: <IconMeat />,
+    href: "/menu",
     hasPermission: ["admin", 'owner'],
   },
 ];

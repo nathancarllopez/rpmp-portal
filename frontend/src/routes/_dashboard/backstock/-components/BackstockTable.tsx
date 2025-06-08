@@ -102,17 +102,6 @@ export default function BackstockTable({
     setSortBy(sortHeader);
   };
 
-  // To do: Add this info directly to supabase proteins column
-  const rowColors: Record<string, [string, number]> = {
-    "Beef Bison": ["blue", 3],
-    Chicken: ["grape", 3],
-    "Mahi Mahi": ["orange", 2],
-    Salmon: ["grape", 2],
-    Shrimp: ["red", 5],
-    Sirloin: ["blue", 5],
-    Turkey: ["green", 2],
-  };
-
   const headers = BACKSTOCK_HEADERS.map((header) => (
     <BackstockHeader
       key={header.key}
@@ -126,7 +115,6 @@ export default function BackstockTable({
 
   const rows = sortedData.map((row) => {
     const isSelected = selectedIds.has(row.id);
-    const [rowColor, shade] = rowColors[row.protein];
     return (
       <Table.Tr
         key={row.id}
@@ -137,7 +125,7 @@ export default function BackstockTable({
         </Table.Td>
         <Table.Td>
           <Badge
-            color={`${rowColor}.${shade}`}
+            color={row.displayColor}
             autoContrast
           >
             {row.protein}

@@ -8,7 +8,7 @@ export interface BackstockRow {
   id: number;
   protein: string;
   weight: number;
-  // displayColor: string;
+  displayColor: string;
 }
 
 export function useBackstock() {
@@ -36,6 +36,7 @@ async function getBackstock() {
       id: row.id ?? Math.floor(Math.random() * 1e9),
       protein: row.protein ?? "MISSING",
       weight: row.weight ?? 0,
+      displayColor: row.display_color ?? "yellow.1",
     };
   });
 

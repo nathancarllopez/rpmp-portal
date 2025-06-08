@@ -12,7 +12,7 @@ function RouteComponent() {
         <Title>Welcome to the RPMP Dashboard</Title>
         <Image w={{ base: 50, sm: 100 }} fit="contain" src={"/logo.png"} alt="Logo" />
       </Group>
-      
+
       <Paper>
         <Group>
           <Anchor>Quick Link 1</Anchor>

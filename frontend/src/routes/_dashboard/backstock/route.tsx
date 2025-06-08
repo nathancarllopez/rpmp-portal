@@ -56,20 +56,21 @@ function BackstockRoute() {
       }));
   }, [data, selectedIds]);
 
-  const selectUsed = () => {
+  const selectAllClaimed = () => {
     if (!data) return;
 
-    const used = new Set<number>();
-    data.forEach((row) => {
-      if (!row.available) {
-        used.add(row.id);
-      }
+    setSelectedIds(() => {
+      const claimed = new Set<number>();
+      return data.reduce((claimed, row) => {
+        if (!row.available) {
+          claimed.add(row.id);
+        }
+        return claimed;
+      }, claimed);
     });
+  }
 
-    setSelectedIds(used);
-  };
-
-  const onUndo = async () => {
+  const handleUndoClick = async () => {
     if (!undoData) {
       throw new Error("Tried to undo with no undo data");
     }
@@ -130,8 +131,8 @@ function BackstockRoute() {
         <Button w={buttonWidth} onClick={openAdd}>
           Add Backstock
         </Button>
-        <Button w={buttonWidth} onClick={selectUsed}>
-          Select All Used
+        <Button w={buttonWidth} onClick={selectAllClaimed}>
+          Select All Claimed
         </Button>
         <Tooltip disabled={selectedIds.size !== 0} label="Select rows you want to edit">
           <Button
@@ -149,7 +150,7 @@ function BackstockRoute() {
           variant="outline"
           color="red"
           fullWidth
-          onClick={onUndo}
+          onClick={handleUndoClick}
           disabled={isUndoing}
         >
           {isUndoing ? "Undoing..." : "Undo Last Edit"}

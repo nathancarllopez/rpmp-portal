@@ -13,7 +13,8 @@ export type Database = {
         Row: {
           available: boolean
           created_at: string
-          flavor: string
+          deleted_on: string | null
+          flavor: string | null
           id: number
           protein: string
           weight: number
@@ -21,7 +22,8 @@ export type Database = {
         Insert: {
           available?: boolean
           created_at?: string
-          flavor: string
+          deleted_on?: string | null
+          flavor?: string | null
           id?: number
           protein: string
           weight: number
@@ -29,10 +31,57 @@ export type Database = {
         Update: {
           available?: boolean
           created_at?: string
-          flavor?: string
+          deleted_on?: string | null
+          flavor?: string | null
           id?: number
           protein?: string
           weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "backstock_flavor_fkey"
+            columns: ["flavor"]
+            isOneToOne: false
+            referencedRelation: "flavors"
+            referencedColumns: ["name"]
+          },
+          {
+            foreignKeyName: "backstock_protein_fkey"
+            columns: ["protein"]
+            isOneToOne: false
+            referencedRelation: "proteins"
+            referencedColumns: ["name"]
+          },
+          {
+            foreignKeyName: "backstock_protein_fkey"
+            columns: ["protein"]
+            isOneToOne: false
+            referencedRelation: "proteins_with_flavors"
+            referencedColumns: ["protein_name"]
+          },
+        ]
+      }
+      flavors: {
+        Row: {
+          created_at: string
+          id: number
+          label: string
+          name: string
+          proteins: string[] | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          label: string
+          name: string
+          proteins?: string[] | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          label?: string
+          name?: string
+          proteins?: string[] | null
         }
         Relationships: []
       }
@@ -78,33 +127,78 @@ export type Database = {
       proteins: {
         Row: {
           created_at: string
+          display_color: string | null
           flavors: string[] | null
           id: number
-          name: string | null
-          shrink: number | null
+          label: string
+          name: string
+          shrink: number
         }
         Insert: {
           created_at?: string
+          display_color?: string | null
           flavors?: string[] | null
           id?: number
-          name?: string | null
-          shrink?: number | null
+          label?: string
+          name: string
+          shrink?: number
         }
         Update: {
           created_at?: string
+          display_color?: string | null
           flavors?: string[] | null
           id?: number
-          name?: string | null
-          shrink?: number | null
+          label?: string
+          name?: string
+          shrink?: number
         }
         Relationships: []
       }
     }
     Views: {
-      [_ in never]: never
+      backstock_view: {
+        Row: {
+          available: boolean | null
+          created_at: string | null
+          flavor: string | null
+          id: number | null
+          protein: string | null
+          weight: number | null
+        }
+        Relationships: []
+      }
+      proteins_with_flavors: {
+        Row: {
+          flavor_labels: string[] | null
+          flavor_names: string[] | null
+          protein_label: string | null
+          protein_name: string | null
+        }
+        Insert: {
+          flavor_labels?: never
+          flavor_names?: string[] | null
+          protein_label?: string | null
+          protein_name?: string | null
+        }
+        Update: {
+          flavor_labels?: never
+          flavor_names?: string[] | null
+          protein_label?: string | null
+          protein_name?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      update_backstock_rows: {
+        Args: { updates: Json }
+        Returns: {
+          id: number
+          weight: number
+          created_at: string
+          deleted_on: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

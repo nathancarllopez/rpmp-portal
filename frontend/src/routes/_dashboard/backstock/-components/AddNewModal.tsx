@@ -15,6 +15,7 @@ import {
   NumberInput,
   Paper,
   Select,
+  Stack,
   Text,
   Title,
   Tooltip,
@@ -94,23 +95,7 @@ export default function AddNewModal({ opened, handleClose }: AddNewModalProps) {
   const ModalTitle = () => (
     <Group>
       <Title>Add New Backstock</Title>
-      <Button
-        leftSection={<IconPlus />}
-        size="xs"
-        w={100}
-        onClick={handleAddField}
-      >
-        Row
-      </Button>
-      <Button
-        leftSection={<IconRestore />}
-        size="xs"
-        w={100}
-        onClick={handleResetFields}
-      >
-        Reset
-      </Button>
-      <CloseButton size={'xl'} ms={'auto'} onClick={handleClose}/>
+      <CloseButton size={'lg'} ms='auto' onClick={handleClose}/>
     </Group>
   );
 
@@ -124,7 +109,7 @@ export default function AddNewModal({ opened, handleClose }: AddNewModalProps) {
         size={modalSize}
         padding={0}
       >
-        <ModalTitle/>
+        <ModalTitle />
         <Center>
           <Loader />
         </Center>
@@ -133,7 +118,7 @@ export default function AddNewModal({ opened, handleClose }: AddNewModalProps) {
   }
 
   const formFields = form.getValues().newBackstock.map((item, index) => (
-    <Group key={item.key} mb={"md"}>
+    <Group key={item.key} mb={"md"} justify="space-between">
       <Select
         placeholder="Protein"
         data={proteinsWithFlavors.map((row) => ({
@@ -198,7 +183,7 @@ export default function AddNewModal({ opened, handleClose }: AddNewModalProps) {
         hideControls
       />
       {index !== 0 && (
-        <ActionIcon onClick={() => handleRemoveField(index, item.key)}>
+        <ActionIcon variant="outline" color="red" onClick={() => handleRemoveField(index, item.key)}>
           <IconTrash />
         </ActionIcon>
       )}
@@ -262,19 +247,50 @@ export default function AddNewModal({ opened, handleClose }: AddNewModalProps) {
           <Text>{error.message}</Text>
         </Paper>
       ) : (
-        <>
+        <Stack>
           <ModalTitle />
           <FormWithDisable
             submitButtonLabels={{
               label: "Add",
-              disabledLabel: "Adding...",
+              disabledLabel: "Adding..."
             }}
             submitButtonStyle={{}}
             onSubmit={form.onSubmit(handleSubmit)}
           >
+            <Group pb={'md'} justify="center">
+              <Button
+                leftSection={<IconPlus />}
+                size="xs"
+                variant="default"
+                onClick={handleAddField}
+              >
+                Add Row
+              </Button>
+              <Button
+                leftSection={<IconRestore />}
+                size="xs"
+                variant="default"
+                onClick={handleResetFields}
+              >
+                Reset Rows
+              </Button>
+            </Group>
             {formFields}
           </FormWithDisable>
-        </>
+        </Stack>
+        // <>
+        //   <ModalTitle />
+        //   <FormWithDisable
+        //     submitButtonLabels={{
+        //       label: "Add",
+        //       disabledLabel: "Adding...",
+        //     }}
+        //     submitButtonStyle={{}}
+        //     onSubmit={form.onSubmit(handleSubmit)}
+        //   >
+        //     {formFields}
+        //   </FormWithDisable>
+        // </>
       )}
     </Modal>
   );

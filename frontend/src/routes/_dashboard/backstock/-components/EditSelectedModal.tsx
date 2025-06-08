@@ -1,5 +1,6 @@
 import FormWithDisable from "@/routes/-components/FormWithDisable";
 import {
+  Badge,
   CloseButton,
   Group,
   Modal,
@@ -32,19 +33,25 @@ export default function EditSelectedModal({
   handleClose,
   selected,
   setSelectedIds,
-  setUndoData
+  setUndoData,
 }: EditSelectedModalProps) {
   const queryClient = useQueryClient();
   const form = useForm<{ selectedRows: SelectedBackstockRow[] }>({
     mode: "uncontrolled",
     initialValues: {
-      selectedRows: selected,
+      selectedRows: selected.sort((rowA, rowB) =>
+        rowA.name.localeCompare(rowB.name)
+      ),
     },
   });
 
   const formRows = form.getValues().selectedRows.map((item, index) => (
     <Table.Tr key={item.id}>
-      <Table.Th>{item.name}</Table.Th>
+      <Table.Th>
+        <Badge color={item.displayColor} autoContrast>
+          {item.protein}
+        </Badge>
+      </Table.Th>
       <Table.Td>
         <NumberInput
           placeholder="Weight (oz)"
@@ -124,7 +131,7 @@ export default function EditSelectedModal({
           weight: curr.weight,
           created_at: curr.created_at,
           deleted_on: curr.deleted_on,
-        }
+        };
 
         return acc;
       }, {} as UpdateBackstockInfo);

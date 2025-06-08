@@ -53,7 +53,7 @@ export default function CreateProfileForm() {
       notifications.show({
         withCloseButton: true,
         color: "green",
-        title: "Profile Created!",
+        title: "Profile Created",
         message: "The new profile has password 'rpmp-password'",
       });
 

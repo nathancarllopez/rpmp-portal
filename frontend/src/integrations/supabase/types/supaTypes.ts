@@ -160,6 +160,7 @@ export type Database = {
         Row: {
           available: boolean | null
           created_at: string | null
+          display_color: string | null
           flavor: string | null
           id: number | null
           protein: string | null

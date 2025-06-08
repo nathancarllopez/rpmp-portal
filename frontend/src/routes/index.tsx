@@ -102,47 +102,6 @@ function LoginForm() {
       });
     }
   };
-  // const handleSubmit = async (values: typeof form.values) => {
-  //   try {
-  //     const { email, password } = values;
-  //     const user = await doLogin(email, password);
-
-  //     const firstLogin = !user.user_metadata.has_signed_in;
-  //     if (firstLogin) {
-  //       notifications.show({
-  //         withCloseButton: true,
-  //         color: "green",
-  //         title: "Nice to meet you!",
-  //         message: "Please update your password.",
-  //       });
-
-  //       await navigate({ to: "/changePassword" });
-  //       return;
-  //     }
-
-  //     notifications.show({
-  //       withCloseButton: true,
-  //       color: "green",
-  //       title: "Logged in!",
-  //       message: "Loading profile information...",
-  //     });
-
-  //     await navigate({ to: "/home" });
-  //   } catch (error) {
-  //     if (error instanceof Error) {
-  //       console.warn("Error logging in: ", error.message);
-  //     } else {
-  //       console.warn("Unkown error logging in: ", JSON.stringify(error));
-  //     }
-
-  //     notifications.show({
-  //       withCloseButton: true,
-  //       color: "red",
-  //       title: "Error signing in",
-  //       message: `${(error as Error)?.message || JSON.stringify(error)}`,
-  //     });
-  //   }
-  // };
 
   return (
     <Container size={460} my={50}>

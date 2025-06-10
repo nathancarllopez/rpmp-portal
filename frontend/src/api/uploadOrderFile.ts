@@ -2,7 +2,7 @@ import type { FileWithPath } from "@mantine/dropzone";
 
 const endpoint = "/orders/process-orders";
 
-export default async function uploadOrder(orderFile: FileWithPath) {
+export default async function uploadOrderFile(orderFile: FileWithPath) {
   const formData = new FormData();
   formData.append("orders", orderFile);
 

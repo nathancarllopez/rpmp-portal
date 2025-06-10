@@ -13,6 +13,7 @@
     "test": "echo \"No tests yet\""
   },
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "supabase": "^2.24.3"
   }
 }

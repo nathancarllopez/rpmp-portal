@@ -1,100 +1,96 @@
-import { Box, Button, Container, Group, Stack, Title } from "@mantine/core";
-import { Dropzone, MIME_TYPES, type FileWithPath } from "@mantine/dropzone";
+import { Stack, Stepper, Text, Title } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
-import { notifications } from "@mantine/notifications";
-import { IconFileDescription, IconUpload, IconX } from "@tabler/icons-react";
-import { useMediaQuery } from "@mantine/hooks";
-import Subtitle from "@/routes/-components/Subtitle";
-import uploadOrder from "@/api/uploadOrder";
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import OrderUpload from "./-components/OrderUpload";
+import OrderEditor from "./-components/OrderEditor";
+import OrderDisplay from "./-components/OrderDisplay";
 
 export const Route = createFileRoute("/_dashboard/orders")({
-  component: Orders,
+  component: OrdersComponent,
 });
 
-function Orders() {
-  const queryClient = useQueryClient();
-  const atSmallBp = useMediaQuery("(min-width: 48em)");
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+export const headerMapping: Record<string, string> = {
+  firstName: "First Name (Shipping)",
+  lastName: "Last Name (Shipping)",
+  itemName: "Item Name",
+  flavor: "Flavor",
+  protein: "Tags",
+  quantity: "Quantity",
+};
 
+export const flavorMapping: Record<string, string> = {
+  "COMPETITOR-PREP (100% PLAIN-PLAIN)": "x",
+  "BBQ CHICKEN (SUGAR FREE)": "bbq",
+  BLACKENED: "blackened",
+  "GARLIC AND HERB (As Described)": "garlicHerb",
+  "HIMALAYAN PINK SALT AND PEPPER ONLY": "saltAndPepper",
+  "LEMON PEPPER": "lemonPepper",
+  "SPICY BEEF BISON": "spicy",
+  "SPICY TERIYAKI BEEF BISON": "spicyTeriyaki",
+  "SPICY TERIYAKI TURKEY": "spicyTeriyaki",
+  "SPICY TURKEY": "spicy",
+  "SRIRACHA CHICKEN (SPICY &amp; SWEET)": "sriracha",
+  "STEAKHOUSE SHRIMP": "steakhouse",
+  "STEAKHOUSE SIRLOIN": "steakhouse",
+  "TASTY FAJITA": "fajita",
+  "TERIYAKI (SUGAR FREE)": "teriyaki",
+  "TWISTED CAJUN (As Described)": "twistedCajun",
+  "TWISTED TERIYAKI": "twistedTeriyaki",
+  "WILD'N SHRIMP (As Described)": "wildn",
+  "ZEST'N LEMON": "zestn",
+};
 
-  const handleFileDrop = async (files: FileWithPath[]) => {
-    const pdfBlob = await uploadOrder(files[0]);
-    setPdfUrl(URL.createObjectURL(pdfBlob));
-    queryClient.invalidateQueries({ queryKey: ['backstock'] })
-  };
+export interface Order {
+  fullName: string;
+  itemName: string;
+  flavor: string;
+  flavorLabel: string;
+  protein: string;
+  proteinLabel: string;
+  quantity: number;
+};
+
+function OrdersComponent() {
+  const [activeStep, setActiveStep] = useState(0);
+  const [orderData, setOrderData] = useState<Order[] | null>(null);
+  const [orderReportUrl, setOrderReportUrl] = useState<string | undefined>(
+    undefined
+  );
+
+  // To do: Implement these helpers, and maybe put the steps into an array so that 2 isn't a magic number
+  // const toNextStep = () => setActiveStep((curr) => Math.min(2, curr + 1));
+  // const toPrevStep = () => setActiveStep((curr) => Math.max(0, curr - 1));
 
   return (
     <Stack>
-      <Title>Upload Order</Title>
+      <Title>Orders</Title>
 
-      <Dropzone
-        onDrop={handleFileDrop}
-        onReject={() =>
-          notifications.show({
-            withCloseButton: true,
-            color: "red",
-            title: "Upload Failed",
-            message: "Please upload a csv",
-          })
-        }
-        accept={[MIME_TYPES.csv]}
-      >
-        <Group justify="center" mih={100} style={{ pointerEvents: "none" }}>
-          <Dropzone.Idle>
-            <IconFileDescription size={50} />
-          </Dropzone.Idle>
-          <Dropzone.Accept>
-            <IconUpload size={50} />
-          </Dropzone.Accept>
-          <Dropzone.Reject>
-            <IconX size={50} />
-          </Dropzone.Reject>
-
-          <Container mx={0}>
-            <Title order={atSmallBp ? 3 : 4} ta={"center"}>
-              {atSmallBp
-                ? "Drag and drop the order sheet here"
-                : "Tap here to upload the order sheet"}
-            </Title>
-            <Box visibleFrom="sm">
-              <Subtitle>
-                You can also click to search for the order sheet
-              </Subtitle>
-            </Box>
-          </Container>
-        </Group>
-      </Dropzone>
-
-      {pdfUrl && (
-        <>
-          <Group justify="center">
-            <Button
-              component={"a"}
-              href={pdfUrl}
-              download={`order-${new Date().toLocaleDateString()}`}
-              w={150}
-            >
-              Download
-            </Button>
-            <Button w={150} onClick={() => setPdfUrl(null)}>
-              Clear
-            </Button>
-          </Group>
-
-          <Box h={{ sm: 800, base: 700 }}>
-            <iframe
-              src={pdfUrl}
-              title="Order Report PDF"
-              width="100%"
-              height="100%"
-              allowFullScreen
-              style={{ border: "1px solid #ccc" }}
+      <Stepper active={activeStep} allowNextStepsSelect={false}>
+        <Stepper.Step label="Step 1" description="Upload order sheet">
+          <OrderUpload
+            setOrderData={setOrderData}
+            setActiveStep={setActiveStep}
+          />
+        </Stepper.Step>
+        <Stepper.Step label="Step 2" description="Edit order upload">
+          {orderData ? (
+            <OrderEditor
+              orderData={orderData}
+              setOrderData={setOrderData}
+              setActiveStep={setActiveStep}
             />
-          </Box>
-        </>
-      )}
+          ) : (
+            <Text>No order data provided</Text>
+          )}
+        </Stepper.Step>
+        <Stepper.Step label="Step 3" description="Generate order print outs">
+          <OrderDisplay
+            orderReportUrl={orderReportUrl}
+            setOrderReportUrl={setOrderReportUrl}
+            setActiveStep={setActiveStep}
+          />
+        </Stepper.Step>
+      </Stepper>
     </Stack>
   );
 }

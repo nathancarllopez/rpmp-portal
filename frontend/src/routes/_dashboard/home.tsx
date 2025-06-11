@@ -19,6 +19,8 @@ function RouteComponent() {
           <Anchor>Quick Link 2</Anchor>
         </Group>
       </Paper>
+
+
     </Stack>
   );
 }

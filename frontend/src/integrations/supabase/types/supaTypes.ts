@@ -172,6 +172,27 @@ export type Database = {
         }
         Relationships: []
       }
+      role_info: {
+        Row: {
+          explanation: string
+          id: number
+          label: string
+          name: string
+        }
+        Insert: {
+          explanation: string
+          id?: number
+          label: string
+          name: string
+        }
+        Update: {
+          explanation?: string
+          id?: number
+          label?: string
+          name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       backstock_view: {

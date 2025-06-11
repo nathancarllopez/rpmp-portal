@@ -2,6 +2,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { queryOptions } from "@tanstack/react-query";
 
 export interface OrderHeaderRow {
+  id: number;
   name: string;
   label: string;
   rawLabel: string;
@@ -18,7 +19,7 @@ export function orderHeadersOptions() {
 async function getOrderHeaders(): Promise<OrderHeaderRow[]> {
   const { data, error } = await supabase
     .from("order_headers")
-    .select("name, label, raw_label");
+    .select();
 
   if (error) {
     console.warn("Failed to fetch order headers");
@@ -30,6 +31,7 @@ async function getOrderHeaders(): Promise<OrderHeaderRow[]> {
   const orderHeaders: OrderHeaderRow[] = data
     .sort((rowA, rowB) => rowA.label.localeCompare(rowB.label))
     .map((row) => ({
+      id: row.id,
       name: row.name,
       label: row.label,
       rawLabel: row.raw_label,

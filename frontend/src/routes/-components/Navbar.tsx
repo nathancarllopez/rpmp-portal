@@ -27,13 +27,13 @@ import useProfilePic from "@/integrations/tanstack-query/useProfilePic.ts";
 
 interface NavLinkInfo {
   id: string;
-  label: React.ReactNode;
+  label: string;
   icon: React.ReactNode;
   href: string;
   hasPermission: UserRole[];
 }
 
-const ALL_NAV_LINKS: NavLinkInfo[] = [
+export const ALL_NAV_LINKS: NavLinkInfo[] = [
   {
     id: "orders",
     label: "Orders",

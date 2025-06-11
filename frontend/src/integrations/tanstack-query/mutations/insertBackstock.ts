@@ -12,7 +12,7 @@ export function useInsertBackstockMutation() {
   return useMutation({
     mutationKey: ["insertBackstock"],
     mutationFn: insertBackstock,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["backstock" ]}),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["backstock"] }),
   });
 }
 

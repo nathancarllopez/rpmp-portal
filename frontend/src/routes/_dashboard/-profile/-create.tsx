@@ -7,11 +7,11 @@ import FormWithDisable from "@/routes/-components/FormWithDisable";
 import { useAuth } from "@/integrations/supabase/auth/AuthProvider";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
-import RoleSelect from "./-components/RoleSelect";
+// import RoleSelect from "./-components/RoleSelect";
 
-export const Route = createFileRoute("/_dashboard/profile/create")({
-  component: CreateProfileForm,
-});
+// export const Route = createFileRoute("/_dashboard/profile/create")({
+//   component: CreateProfileForm,
+// });
 
 export default function CreateProfileForm() {
   const navigate = useNavigate();
@@ -122,7 +122,7 @@ export default function CreateProfileForm() {
           />
         </Grid.Col>
         <Grid.Col>
-          <RoleSelect form={form} />
+          {/* <RoleSelect form={form} /> */}
         </Grid.Col>
         <Grid.Col span={{ base: 12, sm: 6 }}>
           <NumberInput

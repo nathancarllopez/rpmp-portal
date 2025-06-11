@@ -2,6 +2,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { queryOptions } from "@tanstack/react-query";
 
 export interface FlavorRow {
+  id: number;
   name: string;
   label: string;
   rawLabel: string;
@@ -30,6 +31,7 @@ async function getFlavors(): Promise<FlavorRow[]> {
   const flavors: FlavorRow[] = data
     .sort((rowA, rowB) => rowA.label.localeCompare(rowB.label))
     .map((row) => ({
+      id: row.id,
       name: row.name,
       label: row.label,
       rawLabel: row.raw_label,

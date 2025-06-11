@@ -11,8 +11,7 @@ import { Dropzone, MIME_TYPES, type FileWithPath } from "@mantine/dropzone";
 import { IconFileDescription, IconUpload, IconX } from "@tabler/icons-react";
 import { flavorsOptions } from "@/integrations/tanstack-query/queries/flavors";
 import { orderHeadersOptions } from "@/integrations/tanstack-query/queries/orderHeaders";
-
-import { type Order } from "../route";
+import type { Order } from "../../orders";
 
 interface OrderUploadProps {
   setOrderData: React.Dispatch<React.SetStateAction<Order[] | null>>;
@@ -191,9 +190,6 @@ export default function OrderUpload({
       </Stack>
     );
   }
-
-  console.log(headerMapping);
-  console.log(flavorMapping);
 
   return (
     <Stack mt={"md"}>

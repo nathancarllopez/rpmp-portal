@@ -10,7 +10,7 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import type { Order } from "../route";
+import type { Order } from "../../orders";
 
 interface HeaderInfo {
   orderKey: string;

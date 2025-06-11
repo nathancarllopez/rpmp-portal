@@ -1,4 +1,4 @@
-import { createTheme, Paper } from "@mantine/core";
+import { createTheme, Modal, Paper } from "@mantine/core";
 
 export const theme = createTheme({
   components: {
@@ -9,6 +9,12 @@ export const theme = createTheme({
         withBorder: true,
         p: 30,
         mt: 5
+      }
+    }),
+    Modal: Modal.extend({
+      defaultProps: {
+        withCloseButton: false,
+        padding: 0
       }
     })
   }

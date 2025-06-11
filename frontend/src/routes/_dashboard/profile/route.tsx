@@ -40,7 +40,7 @@ function ProfilePage() {
     } else if (value === "search") {
       navigate({
         to: "/profile/search",
-        search: (prev) => ({ ...prev, query: "" }),
+        search: (prev) => ({ ...prev, profileQuery: "" }),
       });
     }
   };

@@ -1,11 +1,13 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { createUser, type NewUserInfo } from "@/api/createUser";
+import { notifications } from "@mantine/notifications";
+import { useQueryClient } from "@tanstack/react-query";
 import { Grid, NumberInput, TextInput } from "@mantine/core";
 import { isEmail, isNotEmpty, useForm } from "@mantine/form";
-import { notifications } from "@mantine/notifications";
+import { createUser, type NewUserInfo } from "@/api/createUser";
 import FormWithDisable from "@/routes/-components/FormWithDisable";
-import RoleSelect from "./-components/RoleSelect";
 import { useAuth } from "@/integrations/supabase/auth/AuthProvider";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+
+import RoleSelect from "./-components/RoleSelect";
 
 export const Route = createFileRoute("/_dashboard/profile/create")({
   component: CreateProfileForm,
@@ -14,6 +16,7 @@ export const Route = createFileRoute("/_dashboard/profile/create")({
 export default function CreateProfileForm() {
   const navigate = useNavigate();
   const { profile } = useAuth();
+  const queryClient = useQueryClient();
 
   const form = useForm({
     mode: "uncontrolled",
@@ -49,6 +52,7 @@ export default function CreateProfileForm() {
 
     try {
       const user = await createUser(newUserInfo, profile?.userId);
+      queryClient.invalidateQueries({ queryKey: ["allProfiles"] });
 
       notifications.show({
         withCloseButton: true,
@@ -61,7 +65,7 @@ export default function CreateProfileForm() {
         to: "/profile/search",
         search: (prev) => ({
           ...prev,
-          query: user.email || "",
+          profileQuery: user.email || "",
         }),
       });
     } catch (error) {

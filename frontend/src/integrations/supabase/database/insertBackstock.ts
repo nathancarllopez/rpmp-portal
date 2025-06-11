@@ -1,18 +1,18 @@
-import { supabase } from "../client";
+// import { supabase } from "../client";
 
-export interface NewBackstockInfo {
-  protein: string;
-  flavor: string;
-  weight: number;
-}
+// export interface NewBackstockInfo {
+//   protein: string;
+//   flavor: string;
+//   weight: number;
+// }
 
-export async function insertBackstock(newBackstock: NewBackstockInfo[]) {
-  const { error } = await supabase.from('backstock').insert(newBackstock);
+// export async function insertBackstock(newBackstock: NewBackstockInfo[]) {
+//   const { error } = await supabase.from('backstock').insert(newBackstock);
 
-  if (error) {
-    console.warn("Failed to insert new backstock rows");
-    console.warn(error.message);
+//   if (error) {
+//     console.warn("Failed to insert new backstock rows");
+//     console.warn(error.message);
 
-    throw error;
-  }
-}
+//     throw error;
+//   }
+// }

@@ -15,15 +15,16 @@ import { Route as TestImport } from './routes/test'
 import { Route as DashboardImport } from './routes/_dashboard'
 import { Route as IndexImport } from './routes/index'
 import { Route as DashboardTimecardsImport } from './routes/_dashboard/timecards'
-import { Route as DashboardSettingsImport } from './routes/_dashboard/settings'
-import { Route as DashboardMenuImport } from './routes/_dashboard/menu'
 import { Route as DashboardHomeImport } from './routes/_dashboard/home'
 import { Route as DashboardFinancesImport } from './routes/_dashboard/finances'
 import { Route as authResetPasswordImport } from './routes/(auth)/resetPassword'
 import { Route as authLoggedOutImport } from './routes/(auth)/loggedOut'
 import { Route as authChangePasswordImport } from './routes/(auth)/changePassword'
+import { Route as DashboardSettingsRouteImport } from './routes/_dashboard/settings/route'
 import { Route as DashboardProfileRouteImport } from './routes/_dashboard/profile/route'
 import { Route as DashboardOrdersRouteImport } from './routes/_dashboard/orders/route'
+import { Route as DashboardMenuRouteImport } from './routes/_dashboard/menu/route'
+import { Route as DashboardEmployeesRouteImport } from './routes/_dashboard/employees/route'
 import { Route as DashboardBackstockRouteImport } from './routes/_dashboard/backstock/route'
 import { Route as DashboardProfileIndexImport } from './routes/_dashboard/profile/index'
 import { Route as DashboardProfileSearchImport } from './routes/_dashboard/profile/search'
@@ -51,18 +52,6 @@ const IndexRoute = IndexImport.update({
 const DashboardTimecardsRoute = DashboardTimecardsImport.update({
   id: '/timecards',
   path: '/timecards',
-  getParentRoute: () => DashboardRoute,
-} as any)
-
-const DashboardSettingsRoute = DashboardSettingsImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => DashboardRoute,
-} as any)
-
-const DashboardMenuRoute = DashboardMenuImport.update({
-  id: '/menu',
-  path: '/menu',
   getParentRoute: () => DashboardRoute,
 } as any)
 
@@ -96,6 +85,12 @@ const authChangePasswordRoute = authChangePasswordImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const DashboardSettingsRouteRoute = DashboardSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
 const DashboardProfileRouteRoute = DashboardProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -105,6 +100,18 @@ const DashboardProfileRouteRoute = DashboardProfileRouteImport.update({
 const DashboardOrdersRouteRoute = DashboardOrdersRouteImport.update({
   id: '/orders',
   path: '/orders',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
+const DashboardMenuRouteRoute = DashboardMenuRouteImport.update({
+  id: '/menu',
+  path: '/menu',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
+const DashboardEmployeesRouteRoute = DashboardEmployeesRouteImport.update({
+  id: '/employees',
+  path: '/employees',
   getParentRoute: () => DashboardRoute,
 } as any)
 
@@ -164,6 +171,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardBackstockRouteImport
       parentRoute: typeof DashboardImport
     }
+    '/_dashboard/employees': {
+      id: '/_dashboard/employees'
+      path: '/employees'
+      fullPath: '/employees'
+      preLoaderRoute: typeof DashboardEmployeesRouteImport
+      parentRoute: typeof DashboardImport
+    }
+    '/_dashboard/menu': {
+      id: '/_dashboard/menu'
+      path: '/menu'
+      fullPath: '/menu'
+      preLoaderRoute: typeof DashboardMenuRouteImport
+      parentRoute: typeof DashboardImport
+    }
     '/_dashboard/orders': {
       id: '/_dashboard/orders'
       path: '/orders'
@@ -176,6 +197,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof DashboardProfileRouteImport
+      parentRoute: typeof DashboardImport
+    }
+    '/_dashboard/settings': {
+      id: '/_dashboard/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof DashboardSettingsRouteImport
       parentRoute: typeof DashboardImport
     }
     '/(auth)/changePassword': {
@@ -211,20 +239,6 @@ declare module '@tanstack/react-router' {
       path: '/home'
       fullPath: '/home'
       preLoaderRoute: typeof DashboardHomeImport
-      parentRoute: typeof DashboardImport
-    }
-    '/_dashboard/menu': {
-      id: '/_dashboard/menu'
-      path: '/menu'
-      fullPath: '/menu'
-      preLoaderRoute: typeof DashboardMenuImport
-      parentRoute: typeof DashboardImport
-    }
-    '/_dashboard/settings': {
-      id: '/_dashboard/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof DashboardSettingsImport
       parentRoute: typeof DashboardImport
     }
     '/_dashboard/timecards': {
@@ -279,23 +293,25 @@ const DashboardProfileRouteRouteWithChildren =
 
 interface DashboardRouteChildren {
   DashboardBackstockRouteRoute: typeof DashboardBackstockRouteRoute
+  DashboardEmployeesRouteRoute: typeof DashboardEmployeesRouteRoute
+  DashboardMenuRouteRoute: typeof DashboardMenuRouteRoute
   DashboardOrdersRouteRoute: typeof DashboardOrdersRouteRoute
   DashboardProfileRouteRoute: typeof DashboardProfileRouteRouteWithChildren
+  DashboardSettingsRouteRoute: typeof DashboardSettingsRouteRoute
   DashboardFinancesRoute: typeof DashboardFinancesRoute
   DashboardHomeRoute: typeof DashboardHomeRoute
-  DashboardMenuRoute: typeof DashboardMenuRoute
-  DashboardSettingsRoute: typeof DashboardSettingsRoute
   DashboardTimecardsRoute: typeof DashboardTimecardsRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardBackstockRouteRoute: DashboardBackstockRouteRoute,
+  DashboardEmployeesRouteRoute: DashboardEmployeesRouteRoute,
+  DashboardMenuRouteRoute: DashboardMenuRouteRoute,
   DashboardOrdersRouteRoute: DashboardOrdersRouteRoute,
   DashboardProfileRouteRoute: DashboardProfileRouteRouteWithChildren,
+  DashboardSettingsRouteRoute: DashboardSettingsRouteRoute,
   DashboardFinancesRoute: DashboardFinancesRoute,
   DashboardHomeRoute: DashboardHomeRoute,
-  DashboardMenuRoute: DashboardMenuRoute,
-  DashboardSettingsRoute: DashboardSettingsRoute,
   DashboardTimecardsRoute: DashboardTimecardsRoute,
 }
 
@@ -308,15 +324,16 @@ export interface FileRoutesByFullPath {
   '': typeof DashboardRouteWithChildren
   '/test': typeof TestRoute
   '/backstock': typeof DashboardBackstockRouteRoute
+  '/employees': typeof DashboardEmployeesRouteRoute
+  '/menu': typeof DashboardMenuRouteRoute
   '/orders': typeof DashboardOrdersRouteRoute
   '/profile': typeof DashboardProfileRouteRouteWithChildren
+  '/settings': typeof DashboardSettingsRouteRoute
   '/changePassword': typeof authChangePasswordRoute
   '/loggedOut': typeof authLoggedOutRoute
   '/resetPassword': typeof authResetPasswordRoute
   '/finances': typeof DashboardFinancesRoute
   '/home': typeof DashboardHomeRoute
-  '/menu': typeof DashboardMenuRoute
-  '/settings': typeof DashboardSettingsRoute
   '/timecards': typeof DashboardTimecardsRoute
   '/profile/create': typeof DashboardProfileCreateRoute
   '/profile/search': typeof DashboardProfileSearchRoute
@@ -328,14 +345,15 @@ export interface FileRoutesByTo {
   '': typeof DashboardRouteWithChildren
   '/test': typeof TestRoute
   '/backstock': typeof DashboardBackstockRouteRoute
+  '/employees': typeof DashboardEmployeesRouteRoute
+  '/menu': typeof DashboardMenuRouteRoute
   '/orders': typeof DashboardOrdersRouteRoute
+  '/settings': typeof DashboardSettingsRouteRoute
   '/changePassword': typeof authChangePasswordRoute
   '/loggedOut': typeof authLoggedOutRoute
   '/resetPassword': typeof authResetPasswordRoute
   '/finances': typeof DashboardFinancesRoute
   '/home': typeof DashboardHomeRoute
-  '/menu': typeof DashboardMenuRoute
-  '/settings': typeof DashboardSettingsRoute
   '/timecards': typeof DashboardTimecardsRoute
   '/profile/create': typeof DashboardProfileCreateRoute
   '/profile/search': typeof DashboardProfileSearchRoute
@@ -348,15 +366,16 @@ export interface FileRoutesById {
   '/_dashboard': typeof DashboardRouteWithChildren
   '/test': typeof TestRoute
   '/_dashboard/backstock': typeof DashboardBackstockRouteRoute
+  '/_dashboard/employees': typeof DashboardEmployeesRouteRoute
+  '/_dashboard/menu': typeof DashboardMenuRouteRoute
   '/_dashboard/orders': typeof DashboardOrdersRouteRoute
   '/_dashboard/profile': typeof DashboardProfileRouteRouteWithChildren
+  '/_dashboard/settings': typeof DashboardSettingsRouteRoute
   '/(auth)/changePassword': typeof authChangePasswordRoute
   '/(auth)/loggedOut': typeof authLoggedOutRoute
   '/(auth)/resetPassword': typeof authResetPasswordRoute
   '/_dashboard/finances': typeof DashboardFinancesRoute
   '/_dashboard/home': typeof DashboardHomeRoute
-  '/_dashboard/menu': typeof DashboardMenuRoute
-  '/_dashboard/settings': typeof DashboardSettingsRoute
   '/_dashboard/timecards': typeof DashboardTimecardsRoute
   '/_dashboard/profile/create': typeof DashboardProfileCreateRoute
   '/_dashboard/profile/search': typeof DashboardProfileSearchRoute
@@ -370,15 +389,16 @@ export interface FileRouteTypes {
     | ''
     | '/test'
     | '/backstock'
+    | '/employees'
+    | '/menu'
     | '/orders'
     | '/profile'
+    | '/settings'
     | '/changePassword'
     | '/loggedOut'
     | '/resetPassword'
     | '/finances'
     | '/home'
-    | '/menu'
-    | '/settings'
     | '/timecards'
     | '/profile/create'
     | '/profile/search'
@@ -389,14 +409,15 @@ export interface FileRouteTypes {
     | ''
     | '/test'
     | '/backstock'
+    | '/employees'
+    | '/menu'
     | '/orders'
+    | '/settings'
     | '/changePassword'
     | '/loggedOut'
     | '/resetPassword'
     | '/finances'
     | '/home'
-    | '/menu'
-    | '/settings'
     | '/timecards'
     | '/profile/create'
     | '/profile/search'
@@ -407,15 +428,16 @@ export interface FileRouteTypes {
     | '/_dashboard'
     | '/test'
     | '/_dashboard/backstock'
+    | '/_dashboard/employees'
+    | '/_dashboard/menu'
     | '/_dashboard/orders'
     | '/_dashboard/profile'
+    | '/_dashboard/settings'
     | '/(auth)/changePassword'
     | '/(auth)/loggedOut'
     | '/(auth)/resetPassword'
     | '/_dashboard/finances'
     | '/_dashboard/home'
-    | '/_dashboard/menu'
-    | '/_dashboard/settings'
     | '/_dashboard/timecards'
     | '/_dashboard/profile/create'
     | '/_dashboard/profile/search'
@@ -466,12 +488,13 @@ export const routeTree = rootRoute
       "filePath": "_dashboard.tsx",
       "children": [
         "/_dashboard/backstock",
+        "/_dashboard/employees",
+        "/_dashboard/menu",
         "/_dashboard/orders",
         "/_dashboard/profile",
+        "/_dashboard/settings",
         "/_dashboard/finances",
         "/_dashboard/home",
-        "/_dashboard/menu",
-        "/_dashboard/settings",
         "/_dashboard/timecards"
       ]
     },
@@ -480,6 +503,14 @@ export const routeTree = rootRoute
     },
     "/_dashboard/backstock": {
       "filePath": "_dashboard/backstock/route.tsx",
+      "parent": "/_dashboard"
+    },
+    "/_dashboard/employees": {
+      "filePath": "_dashboard/employees/route.tsx",
+      "parent": "/_dashboard"
+    },
+    "/_dashboard/menu": {
+      "filePath": "_dashboard/menu/route.tsx",
       "parent": "/_dashboard"
     },
     "/_dashboard/orders": {
@@ -494,6 +525,10 @@ export const routeTree = rootRoute
         "/_dashboard/profile/search",
         "/_dashboard/profile/"
       ]
+    },
+    "/_dashboard/settings": {
+      "filePath": "_dashboard/settings/route.tsx",
+      "parent": "/_dashboard"
     },
     "/(auth)/changePassword": {
       "filePath": "(auth)/changePassword.tsx"
@@ -510,14 +545,6 @@ export const routeTree = rootRoute
     },
     "/_dashboard/home": {
       "filePath": "_dashboard/home.tsx",
-      "parent": "/_dashboard"
-    },
-    "/_dashboard/menu": {
-      "filePath": "_dashboard/menu.tsx",
-      "parent": "/_dashboard"
-    },
-    "/_dashboard/settings": {
-      "filePath": "_dashboard/settings.tsx",
       "parent": "/_dashboard"
     },
     "/_dashboard/timecards": {

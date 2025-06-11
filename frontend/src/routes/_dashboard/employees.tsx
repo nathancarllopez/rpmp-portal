@@ -32,11 +32,16 @@ export const Route = createFileRoute("/_dashboard/employees")({
 });
 
 function RouteComponent() {
-  const [opened, { open, close }] = useDisclosure(false);
+  // console.log('employees');
+
   const atSmallBp = useMediaQuery("(min-width: 48em)");
+  const [opened, { open, close }] = useDisclosure(false);
   const [searchValue, setSearchValue] = useState("");
 
   const { status, data, error } = useQuery(allProfilesOptions());
+
+  // console.log('data', data);
+  // console.log('status', status);
 
   const profiles =
     status === "success"
@@ -53,8 +58,6 @@ function RouteComponent() {
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setSearchValue(event.target.value);
-
-  console.log(status);
 
   return (
     <Stack>

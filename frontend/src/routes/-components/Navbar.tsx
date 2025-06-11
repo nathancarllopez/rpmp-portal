@@ -18,6 +18,7 @@ import {
   IconSettings,
   IconSnowflake,
   IconToolsKitchen3,
+  IconUsers,
 } from "@tabler/icons-react";
 import { Link, useRouter } from "@tanstack/react-router";
 import NavLinkLabel from "./NavLinkLabel.tsx";
@@ -66,6 +67,13 @@ const ALL_NAV_LINKS: NavLinkInfo[] = [
     label: "Menu",
     icon: <IconMeat />,
     href: "/menu",
+    hasPermission: ["admin", 'owner'],
+  },
+  {
+    id: "employees",
+    label: "Employees",
+    icon: <IconUsers />,
+    href: "/employees",
     hasPermission: ["admin", 'owner'],
   },
 ];

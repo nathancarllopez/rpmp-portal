@@ -63,25 +63,46 @@ export type Database = {
       }
       flavors: {
         Row: {
-          created_at: string
           id: number
           label: string
           name: string
           proteins: string[] | null
+          raw_label: string
         }
         Insert: {
-          created_at?: string
           id?: number
           label: string
           name: string
           proteins?: string[] | null
+          raw_label: string
         }
         Update: {
-          created_at?: string
           id?: number
           label?: string
           name?: string
           proteins?: string[] | null
+          raw_label?: string
+        }
+        Relationships: []
+      }
+      order_headers: {
+        Row: {
+          id: number
+          label: string
+          name: string
+          raw_label: string
+        }
+        Insert: {
+          id?: number
+          label: string
+          name: string
+          raw_label: string
+        }
+        Update: {
+          id?: number
+          label?: string
+          name?: string
+          raw_label?: string
         }
         Relationships: []
       }
@@ -126,7 +147,6 @@ export type Database = {
       }
       proteins: {
         Row: {
-          created_at: string
           display_color: string | null
           flavors: string[] | null
           id: number
@@ -135,7 +155,6 @@ export type Database = {
           shrink: number
         }
         Insert: {
-          created_at?: string
           display_color?: string | null
           flavors?: string[] | null
           id?: number
@@ -144,7 +163,6 @@ export type Database = {
           shrink?: number
         }
         Update: {
-          created_at?: string
           display_color?: string | null
           flavors?: string[] | null
           id?: number

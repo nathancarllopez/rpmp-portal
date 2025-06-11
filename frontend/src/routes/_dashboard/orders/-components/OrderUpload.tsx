@@ -1,12 +1,18 @@
+import { useState } from "react";
+
+import Papa from "papaparse";
+
+import { useMediaQuery } from "@mantine/hooks";
+import { useQuery } from "@tanstack/react-query";
 import Subtitle from "@/routes/-components/Subtitle";
+import { notifications } from "@mantine/notifications";
 import { Box, Container, Group, Stack, Text, Title } from "@mantine/core";
 import { Dropzone, MIME_TYPES, type FileWithPath } from "@mantine/dropzone";
-import { useMediaQuery } from "@mantine/hooks";
-import { notifications } from "@mantine/notifications";
 import { IconFileDescription, IconUpload, IconX } from "@tabler/icons-react";
-import Papa from "papaparse";
-import { useState } from "react";
-import { flavorMapping, headerMapping, type Order } from "../route";
+import { flavorsOptions } from "@/integrations/tanstack-query/queries/flavors";
+import { orderHeadersOptions } from "@/integrations/tanstack-query/queries/orderHeaders";
+
+import { type Order } from "../route";
 
 interface OrderUploadProps {
   setOrderData: React.Dispatch<React.SetStateAction<Order[] | null>>;
@@ -20,6 +26,21 @@ export default function OrderUpload({
   const [isParsing, setIsParsing] = useState(false);
   const [parseError, setParseError] = useState<string | null>(null);
   const atSmallBp = useMediaQuery("(min-width: 48em)");
+
+  const { data: orderHeaderData, error: orderHeaderError } = useQuery(
+    orderHeadersOptions()
+  );
+  const { data: flavorData, error: flavorError } = useQuery(flavorsOptions());
+
+  const headerMapping: Record<string, string> = {};
+  (orderHeaderData ?? []).forEach(
+    (row) => (headerMapping[row.rawLabel] = row.label)
+  );
+
+  const flavorMapping: Record<string, string> = {};
+  (flavorData ?? []).forEach(
+    (row) => (flavorMapping[row.rawLabel] = row.label)
+  );
 
   const handleDrop = async (files: FileWithPath[]) => {
     setIsParsing(true);
@@ -77,7 +98,7 @@ export default function OrderUpload({
 
       if (rows.length === 0) {
         cleaningErrors.push({
-          noRowsPassed: ""
+          noRowsPassed: "",
         });
         return { orderData, cleaningErrors };
       }
@@ -125,7 +146,8 @@ export default function OrderUpload({
           }
         })();
 
-        const fullName = row[headerMapping.firstName] + " " + row[headerMapping.lastName];
+        const fullName =
+          row[headerMapping.firstName] + " " + row[headerMapping.lastName];
         orderData.push({
           fullName,
           itemName: row[headerMapping.itemName],
@@ -149,6 +171,29 @@ export default function OrderUpload({
       message: "Please upload a csv",
     });
   };
+
+  if (orderHeaderError || flavorError) {
+    return (
+      <Stack mt={"md"}>
+        {orderHeaderError && (
+          <>
+            <Text>Issue fetching order headers</Text>
+            <Text>{orderHeaderError.message}</Text>
+          </>
+        )}
+
+        {flavorError && (
+          <>
+            <Text>Issue fetching flavors</Text>
+            <Text>{flavorError.message}</Text>
+          </>
+        )}
+      </Stack>
+    );
+  }
+
+  console.log(headerMapping);
+  console.log(flavorMapping);
 
   return (
     <Stack mt={"md"}>

@@ -25,6 +25,7 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 
 interface CreateModalProps {
   opened: boolean;
@@ -46,6 +47,7 @@ export default function CreateModal({
   handleClose,
   setSearchValue,
 }: CreateModalProps) {
+  const atSmallBp = useMediaQuery("(min-width: 48em)");
   const [explanation, setExplanation] = useState<null | string>(null);
 
   const { status, data, error } = useQuery(rolesOptions());
@@ -82,26 +84,31 @@ export default function CreateModal({
 
   const ModalHeader = () => (
     <Group>
-      <Title>Create User</Title>
+      <Title
+        order={atSmallBp ? 1 : 2}
+      >
+        Create User
+      </Title>
       <Button
         leftSection={<IconRestore />}
-        size="xs"
+        size={atSmallBp ? 'xs' : 'compact-xs'}
         variant="default"
         onClick={handleResetFields}
       >
         Reset
       </Button>
-      <CloseButton size={"xl"} ms={"auto"} onClick={handleClose} />
+      <CloseButton size={atSmallBp ? 'xl' : 'md'} ms={"auto"} onClick={handleClose} />
     </Group>
   );
 
+  const modalSize = 800;
   if (status === "error") {
     return (
       <Modal
         opened={opened}
         onClose={handleClose}
         withCloseButton={false}
-        size={"auto"}
+        size={modalSize}
       >
         <ModalHeader />
         <Text>Error fetching role information</Text>
@@ -162,7 +169,7 @@ export default function CreateModal({
       opened={opened}
       onClose={handleClose}
       withCloseButton={false}
-      size={"auto"}
+      size={modalSize}
     >
       <ModalHeader />
 

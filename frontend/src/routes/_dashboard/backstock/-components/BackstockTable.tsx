@@ -4,8 +4,8 @@ import cx from "clsx";
 import classes from "./BackstockTable.module.css";
 import { IconCheck } from "@tabler/icons-react";
 import BackstockHeader from "./BackstockHeader";
-import type { BackstockRow } from "@/integrations/tanstack-query/useBackstock";
 import { useMediaQuery } from "@mantine/hooks";
+import type { BackstockRow } from "@/integrations/tanstack-query/queries/backstock";
 
 interface BackstockTableProps {
   data: BackstockRow[];

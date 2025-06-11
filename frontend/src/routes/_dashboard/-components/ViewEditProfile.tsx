@@ -141,7 +141,7 @@ export default function ViewEditProfile({
         message: `The profile of ${fullName} has been deleted`,
       });
 
-      queryClient.invalidateQueries({ queryKey: ["profiles"] });
+      queryClient.invalidateQueries({ queryKey: ["allProfiles"] });
     } catch (error) {
       if (error instanceof Error) {
         console.warn("Error uploading deleting profile: ", error.message);

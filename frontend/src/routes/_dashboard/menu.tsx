@@ -1,9 +1,16 @@
+import { Stack, Title } from '@mantine/core';
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_dashboard/menu')({
-  component: RouteComponent,
+  component: MenuComponent,
 })
 
-function RouteComponent() {
-  return <div>Hello "/_dashboard/menu"!</div>
+function MenuComponent() {
+  return (
+    <Stack>
+      <Title>Menu</Title>
+
+
+    </Stack>
+  );
 }

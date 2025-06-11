@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../root-provider";
 import type { Profile } from "@/integrations/supabase/types/types";
+import snakeToCamel from "@/integrations/supabase/util/snakeToCamel";
 
 export interface NewUserInfo {
   email: string;
@@ -60,5 +61,5 @@ async function createUser(info: NewUserInfo, invokerId: string): Promise<Profile
   }
 
   const { profile } = await response.json();
-  return profile as Profile;
+  return snakeToCamel(profile) as Profile;
 }

@@ -5,14 +5,14 @@ export default async function createUser(
   req: Request,
   res: Response
 ): Promise<void> {
-  const { email, role = "user", profileData = {} } = req.body;
+  const { email, role = "employee", profileData = {} } = req.body;
 
   if (!email) {
-    res.status(400).json({ error: "Email and password required" });
+    res.status(400).json({ error: "Email required" });
     return;
   }
 
-  const { data, error: createError } = await supabase.auth.admin.createUser({
+  const { data: { user }, error: createError } = await supabase.auth.admin.createUser({
     email,
     password: "rpmp-password",
     email_confirm: true,
@@ -22,33 +22,43 @@ export default async function createUser(
     },
   });
 
-  if (createError || !data?.user) {
+  if (createError) {
     console.log("createError");
     console.log(createError?.message);
     res
       .status(500)
       .json({ error: createError?.message || "User creation failed" });
     return;
+  } else if (!user) {
+    console.log("No user returned");
+    res
+      .status(500)
+      .json({ error: "No user returned" });
+    return;
   }
 
-  const { error: profileError } = await supabase.from("profiles").insert({
+  const { data, error: profileError } = await supabase.from("profiles").insert({
     ...profileData,
-    user_id: data.user.id,
+    user_id: user.id,
     kitchen_rate: profileData.kitchen_rate || null,
     driving_rate: profileData.driving_rate || null,
-  });
+  }).select().single();
 
   if (profileError) {
     console.log("profileError");
     console.log(profileError.message);
     res.status(500).json({ error: profileError.message });
     return;
+  } else if (!data) {
+    console.log("No profile returned");
+    res.status(500).json({ error: "No profile returned" });
+    return;
   }
 
   const { error: avatarError } = await supabase
     .storage
     .from('avatars')
-    .copy('image-missing.jpg', `profilePics/${data.user.id}.jpg`);
+    .copy('image-missing.jpg', `profilePics/${user.id}.jpg`);
     
   if (avatarError) {
     console.log('avatarError');
@@ -57,5 +67,5 @@ export default async function createUser(
     return;
   }
 
-  res.status(200).json({ user: data.user });
+  res.status(200).json({ profile: data });
 }

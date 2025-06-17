@@ -13,7 +13,7 @@ app.use(express.json());
 app.use("/auth", authRoutes);
 app.use("/orders", ordersRoutes);
 
-app.get("/health", (req, res) => {
+app.get("/health", (_, res) => {
   res.send("Hello from the backend!");
 });
 

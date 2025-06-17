@@ -4,16 +4,19 @@
   "private": true,
   "workspaces": [
     "frontend",
-    "backend"
+    "backend",
+    "types"
   ],
   "scripts": {
     "start": "npm run dev --workspace backend",
     "dev": "concurrently \"npm run dev --workspace frontend\" \"npm run dev --workspace backend\"",
     "build": "echo \"Building both frontend and backend...\"",
-    "test": "echo \"No tests yet\""
+    "test": "echo \"No tests yet\"",
+    "supatypes": "dotenv -e .env.local -- bash -c 'npx supabase gen types typescript --project-id $SUPABASE_PROJECT_REF --schema public > types/database.types.ts'"
   },
   "devDependencies": {
     "concurrently": "^9.1.2",
+    "dotenv-cli": "^8.0.0",
     "supabase": "^2.24.3"
   }
 }

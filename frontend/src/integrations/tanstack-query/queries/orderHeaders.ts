@@ -1,25 +1,20 @@
 import { supabase } from "@/integrations/supabase/client";
+import { snakeToCamel, type OrderHeaderRow } from "@rpmp-portal/types";
 import { queryOptions } from "@tanstack/react-query";
-
-export interface OrderHeaderRow {
-  id: number;
-  name: string;
-  label: string;
-  rawLabel: string;
-}
 
 export function orderHeadersOptions() {
   return queryOptions({
     queryKey: ["orderHeaders"],
     queryFn: getOrderHeaders,
-    staleTime: Infinity
+    staleTime: Infinity,
   });
 }
 
 async function getOrderHeaders(): Promise<OrderHeaderRow[]> {
   const { data, error } = await supabase
     .from("order_headers")
-    .select();
+    .select()
+    .order("label", { ascending: true });
 
   if (error) {
     console.warn("Failed to fetch order headers");
@@ -28,14 +23,9 @@ async function getOrderHeaders(): Promise<OrderHeaderRow[]> {
     throw error;
   }
 
-  const orderHeaders: OrderHeaderRow[] = data
-    .sort((rowA, rowB) => rowA.label.localeCompare(rowB.label))
-    .map((row) => ({
-      id: row.id,
-      name: row.name,
-      label: row.label,
-      rawLabel: row.raw_label,
-    }));
+  const orderHeaders: OrderHeaderRow[] = data.map((row) =>
+    snakeToCamel<OrderHeaderRow>(row)
+  );
 
   return orderHeaders;
 }

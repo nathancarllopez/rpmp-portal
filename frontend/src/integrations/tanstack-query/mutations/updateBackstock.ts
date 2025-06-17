@@ -1,14 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../root-provider";
 import { supabase } from "@/integrations/supabase/client";
-
-export interface UpdateBackstockInfo {
-  [id: string]: {
-    weight: number;
-    created_at: string; // timestampz in supabase, new Date().toISOString() here
-    deleted_on?: string | null; // Including this property changes the column in the backstock table, and excluding it ignores that column. The string is a timestampz and null undoes the soft delete
-  };
-}
+import type { UpdateBackstockInfo } from "@rpmp-portal/types";
 
 export function useUpdateBackstockMutation() {
   return useMutation({

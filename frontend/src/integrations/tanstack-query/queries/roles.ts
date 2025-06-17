@@ -1,12 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
+import type { RoleInfoRow } from "@rpmp-portal/types";
 import { queryOptions } from "@tanstack/react-query";
-
-export interface RoleRow {
-  id: number;
-  name: string;
-  label: string;
-  explanation: string;
-}
 
 export function rolesOptions() {
   return queryOptions({
@@ -16,7 +10,7 @@ export function rolesOptions() {
   })
 }
 
-async function getRoles(): Promise<RoleRow[]> {
+async function getRoles(): Promise<RoleInfoRow[]> {
   const { data, error } = await supabase.from("role_info").select();
 
   if (error) {

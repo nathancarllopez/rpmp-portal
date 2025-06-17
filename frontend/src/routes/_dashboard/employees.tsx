@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
-import type { Profile } from "@/integrations/supabase/types/types";
 import { allProfilesOptions } from "@/integrations/tanstack-query/queries/allProfiles";
 import {
   ActionIcon,
@@ -26,6 +25,7 @@ import {
 
 import ViewEditProfile from "./-components/ViewEditProfile";
 import CreateModal from "./-components/employees/CreateModal";
+import type { Profile } from "@rpmp-portal/types";
 
 export const Route = createFileRoute("/_dashboard/employees")({
   component: RouteComponent,

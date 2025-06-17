@@ -4,7 +4,7 @@ import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 
 import TanStackQueryLayout from "../integrations/tanstack-query/layout.tsx";
 
-import type { AuthContext } from "@/integrations/supabase/auth/AuthProvider.tsx";
+import type { AuthContext } from "@rpmp-portal/types";
 
 interface MyRouterContext {
   queryClient: QueryClient;

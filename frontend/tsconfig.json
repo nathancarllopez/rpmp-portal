@@ -23,6 +23,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
+      "@rpmp-portal/types": ["../types/index.ts"]
     }
-  }
+  },
+  "references": [
+    { "path": "../types" }
+  ]
 }

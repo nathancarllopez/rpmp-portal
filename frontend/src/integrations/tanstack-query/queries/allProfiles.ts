@@ -1,6 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { Profile } from "@/integrations/supabase/types/types";
-import snakeToCamel from "@/integrations/supabase/util/snakeToCamel";
+import { snakeToCamel, type Profile } from "@rpmp-portal/types";
 import { queryOptions } from "@tanstack/react-query";
 
 export function allProfilesOptions() {
@@ -25,7 +24,7 @@ async function getAllProfiles(): Promise<Profile[]> {
     throw error;
   }
 
-  const profiles = data.map((profile) => snakeToCamel(profile)) as Profile[];
+  const profiles = data.map((profile) => snakeToCamel<Profile>(profile));
 
   return profiles;
 }

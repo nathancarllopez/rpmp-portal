@@ -1,12 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../root-provider";
-
-export interface NewBackstockInfo {
-  protein: string;
-  flavor: string;
-  weight: number;
-};
+import type { NewBackstockInfo } from "@rpmp-portal/types";
 
 export function useInsertBackstockMutation() {
   return useMutation({

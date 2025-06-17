@@ -1,15 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
+import { snakeToCamel, type BackstockViewRow } from "@rpmp-portal/types";
 import { queryOptions } from "@tanstack/react-query";
-
-export interface BackstockRow {
-  available: boolean;
-  createdAt: Date;
-  flavor: string;
-  id: number;
-  protein: string;
-  weight: number;
-  displayColor: string;
-}
 
 export function backstockOptions() {
   return queryOptions({
@@ -19,7 +10,7 @@ export function backstockOptions() {
   });
 }
 
-async function getBackstock(): Promise<BackstockRow[]> {
+async function getBackstock(): Promise<BackstockViewRow[]> {
   const { data, error } = await supabase.from("backstock_view").select();
 
   if (error) {
@@ -29,17 +20,9 @@ async function getBackstock(): Promise<BackstockRow[]> {
     throw error;
   }
 
-  const backstockData: BackstockRow[] = data.map((row) => {
-    return {
-      available: row.available ?? true,
-      createdAt: row.created_at ? new Date(row.created_at) : new Date(),
-      flavor: row.flavor ?? "MISSING",
-      id: row.id ?? Math.floor(Math.random() * 1e9),
-      protein: row.protein ?? "MISSING",
-      weight: row.weight ?? 0,
-      displayColor: row.display_color ?? "yellow.1",
-    };
-  });
+  const backstockData: BackstockViewRow[] = data.map((row) =>
+    snakeToCamel<BackstockViewRow>(row)
+  );
 
   return backstockData;
 }

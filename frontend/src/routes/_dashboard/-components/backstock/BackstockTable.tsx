@@ -5,10 +5,10 @@ import classes from "./BackstockTable.module.css";
 import { IconCheck } from "@tabler/icons-react";
 import BackstockHeader from "./BackstockHeader";
 import { useMediaQuery } from "@mantine/hooks";
-import type { BackstockRow } from "@/integrations/tanstack-query/queries/backstock";
+import type { BackstockViewRow } from "@rpmp-portal/types";
 
 interface BackstockTableProps {
-  data: BackstockRow[];
+  data: BackstockViewRow[];
   selectedIds: Set<number>;
   setSelectedIds: React.Dispatch<React.SetStateAction<Set<number>>>;
 }
@@ -16,7 +16,7 @@ interface BackstockTableProps {
 const BACKSTOCK_HEADERS: {
   key: number;
   label: string;
-  sortBy: keyof BackstockRow;
+  sortBy: keyof BackstockViewRow;
   visibleFrom: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
 }[] = [
   { key: 0, label: "Protein", sortBy: "protein", visibleFrom: undefined },
@@ -32,21 +32,21 @@ export default function BackstockTable({
   setSelectedIds,
 }: BackstockTableProps) {
   const [scrolled, setScrolled] = useState(false);
-  const [sortBy, setSortBy] = useState<keyof BackstockRow>("available");
+  const [sortBy, setSortBy] = useState<keyof BackstockViewRow>("available");
   const [reverseSort, setReverseSort] = useState(false);
   const atSmallBp = useMediaQuery("(min-width: 48em)");
 
   const sortedData = useMemo(() => {
     // Helper to get the value for a given sort key
-    const getValue = (row: BackstockRow, key: keyof BackstockRow) => {
-      if (key === "createdAt") return row.createdAt.getTime();
+    const getValue = (row: BackstockViewRow, key: keyof BackstockViewRow) => {
+      if (key === "createdAt") return new Date(row.createdAt).getTime();
       if (key === "weight") return row.weight;
       if (key === "available") return Number(row.available);
       return row[key];
     };
 
     // Compose the sort keys in order of priority
-    const sortKeys: (keyof BackstockRow)[] = [
+    const sortKeys: (keyof BackstockViewRow)[] = [
       sortBy,
       "protein",
       "flavor",
@@ -97,7 +97,7 @@ export default function BackstockTable({
       }
       return new Set(sortedData.map((row) => row.id));
     });
-  const handleSort = (sortHeader: keyof BackstockRow) => {
+  const handleSort = (sortHeader: keyof BackstockViewRow) => {
     setReverseSort(sortHeader === sortBy ? !reverseSort : false);
     setSortBy(sortHeader);
   };
@@ -132,7 +132,7 @@ export default function BackstockTable({
         <Table.Td>{row.weight} oz</Table.Td>
         {atSmallBp && (
           <>
-            <Table.Td>{row.createdAt.toLocaleDateString()}</Table.Td>
+            <Table.Td>{new Date(row.createdAt).toLocaleDateString()}</Table.Td>
             <Table.Td>
               {row.available ? null : <IconCheck size={15} />}
             </Table.Td>

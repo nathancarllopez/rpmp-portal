@@ -2,6 +2,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { queryOptions } from "@tanstack/react-query";
 
 export function profilePicOptions(userId?: string) {
+  if (!userId) {
+    throw new Error("User Id is required");
+  }
+  
   return queryOptions({
     queryKey: ["profilePic", userId],
     queryFn: () => getProfilePicUrl(userId),
@@ -10,12 +14,8 @@ export function profilePicOptions(userId?: string) {
 }
 
 async function getProfilePicUrl(
-  userId: string | undefined
+  userId: string
 ): Promise<string> {
-  if (!userId) {
-    throw new Error("UserId is required");
-  }
-
   const { data, error } = await supabase.storage
     .from("avatars")
     .list("profilePics", {
@@ -25,14 +25,13 @@ async function getProfilePicUrl(
   if (error) {
     console.warn("Supabase error listing profile pictures:")
     console.warn(error.message);
-
     throw error;
   } else if (!data) {
     throw new Error("Supabase didn't return any data from profilePics storage bucket")
   } else if (!Array.isArray(data)) {
     throw new Error(`Supabase did not return an array: ${JSON.stringify(data)}`)
   } else if (data.length === 0) {
-    throw new Error("No profile pictures returned from supabase") // This is the error that is occurring
+    throw new Error("No profile pictures returned from supabase")
   }
 
   const profilePic = data.find((file) => file.name.startsWith(userId));

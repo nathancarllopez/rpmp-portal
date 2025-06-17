@@ -9,7 +9,6 @@ import FormWithDisable from "@/routes/-components/FormWithDisable";
 import { useAuth } from "@/integrations/supabase/auth/AuthProvider";
 import { rolesOptions } from "@/integrations/tanstack-query/queries/roles";
 import {
-  type NewUserInfo,
   useCreateUserMutation,
 } from "@/integrations/tanstack-query/mutations/createUser";
 import {
@@ -26,6 +25,7 @@ import {
   Title,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
+import type { NewUserInfo } from "@rpmp-portal/types";
 
 interface CreateModalProps {
   opened: boolean;

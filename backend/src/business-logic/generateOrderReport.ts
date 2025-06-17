@@ -1,5 +1,6 @@
+import { Meal, Order, OrderError, OrderStatistics } from "@rpmp-portal/types";
 import PDFDocument from "pdfkit-table";
-import { Meal, Order, OrderError, OrderStatistics } from "./types";
+// import { Meal, Order, OrderError, OrderStatistics } from "./types";
 
 export default function generateOrderReport(
   orders: Order[],
@@ -68,16 +69,16 @@ function addMeals(report: PDFDocument, meals: Meal[]) {
   report.table(
     {
       headers: [
-        { label: "Protein", property: "protein", width: 100 },
-        { label: "Flavor", property: "flavor", width: 100 },
+        { label: "Protein", property: "proteinLabel", width: 100 },
+        { label: "Flavor", property: "flavorLabel", width: 100 },
         {
           label: "Weight (oz)",
-          property: "weightOz",
+          property: "weight",
           width: 100,
           align: "right",
         },
         {
-          label: "Weight (lb-oz)",
+          label: "Weight (lboz)",
           property: "weightLbOz",
           width: 100,
           align: "right",
@@ -89,7 +90,7 @@ function addMeals(report: PDFDocument, meals: Meal[]) {
           align: "right",
         },
         {
-          label: "Backstock (oz)",
+          label: "Backstock Used (oz)",
           property: "backstockWeight",
           width: 100,
           align: "right",
@@ -98,9 +99,9 @@ function addMeals(report: PDFDocument, meals: Meal[]) {
       datas: meals.map((meal) => {
         return {
           ...meal,
-          weightOz: `${meal.weightOz} oz`,
+          weight: `${meal.weight} oz`,
           backstockWeight: `${meal.backstockWeight} oz`,
-          cookedWeightOz: `${meal.cookedWeightOz} oz`,
+          cookedWeight: `${meal.cookedWeight} oz`,
         };
       }),
     },
@@ -188,6 +189,7 @@ function addOrders(report: PDFDocument, orders: Order[]) {
       return {
         ...order,
         quantity: order.quantity.toString(),
+        weight: order.weight.toString()
       };
     }),
   });

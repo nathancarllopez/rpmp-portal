@@ -17,6 +17,6 @@
   "devDependencies": {
     "concurrently": "^9.1.2",
     "dotenv-cli": "^8.0.0",
-    "supabase": "^2.24.3"
+    "supabase": "^2.26.9"
   }
 }

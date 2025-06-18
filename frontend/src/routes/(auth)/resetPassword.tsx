@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { isEmail, useForm } from "@mantine/form";
 import { Anchor, Container, TextInput, Title } from "@mantine/core";
-import Subtitle from "@/routes/-components/Subtitle";
 import { notifications } from "@mantine/notifications";
 import resetPassword from "@/integrations/supabase/auth/resetPassword";
-import FormWithDisable from "../-components/FormWithDisable";
+import Subtitle from "@/components/misc/Subtitle";
+import FormWithDisable from "@/components/misc/FormWithDisable";
 
 export const Route = createFileRoute("/(auth)/resetPassword")({
   component: ResetPassword,

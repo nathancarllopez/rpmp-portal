@@ -5,7 +5,6 @@ import type { UpdateBackstockInfo } from "@rpmp-portal/types";
 
 export function useUpdateBackstockMutation() {
   return useMutation({
-    mutationKey: ["updateBackstock"],
     mutationFn: updateBackstock,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["backstock"] }),
   });

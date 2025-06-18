@@ -1,15 +1,16 @@
-import Subtitle from "@/routes/-components/Subtitle";
 import { notifications } from "@mantine/notifications";
 import { hasLength, matchesField, useForm } from "@mantine/form";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { Container, PasswordInput, Title } from "@mantine/core";
-import getSession from "@/integrations/supabase/auth/getSession";
-import FormWithDisable from "../-components/FormWithDisable";
 import changePassword from "@/integrations/supabase/auth/changePassword";
+import Subtitle from "@/components/misc/Subtitle";
+import FormWithDisable from "@/components/misc/FormWithDisable";
+import { getSupaSession } from "@/integrations/supabase/auth/getSupaSession";
 
 export const Route = createFileRoute("/(auth)/changePassword")({
   beforeLoad: async () => {
-    const session = await getSession();
+    const session = await getSupaSession();
+
     if (!session) {
       notifications.show({
         withCloseButton: true,
@@ -17,6 +18,7 @@ export const Route = createFileRoute("/(auth)/changePassword")({
         title: "Authentication Required",
         message: "You must be logged in to access this page.",
       });
+      
       throw redirect({ to: "/", search: { redirect: "" } });
     }
   },
@@ -50,7 +52,7 @@ function ChangePassword() {
         message: "You have successfully updated your password!",
       });
 
-      await navigate({ to: "/home" });
+      await navigate({ to: "/dashboard" });
     } catch (error) {
       if (error instanceof Error) {
         console.warn("Error updating password: ", error.message);

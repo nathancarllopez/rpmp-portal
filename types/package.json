@@ -1,0 +1,7 @@
+{
+  "name": "@rpmp-portal/types",
+  "version": "1.0.0",
+  "dependencies": {
+    "type-fest": "^4.41.0"
+  }
+}

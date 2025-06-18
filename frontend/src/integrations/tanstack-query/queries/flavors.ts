@@ -13,7 +13,8 @@ export function flavorsOptions() {
 async function getFlavors(): Promise<FlavorRow[]> {
   const { data, error } = await supabase
     .from("flavors")
-    .select();
+    .select()
+    .order("label", { ascending: true });
 
   if (error) {
     console.warn("Failed to fetch flavors");
@@ -23,7 +24,6 @@ async function getFlavors(): Promise<FlavorRow[]> {
   }
 
   const flavors: FlavorRow[] = data
-    .sort((rowA, rowB) => rowA.label.localeCompare(rowB.label))
     .map((row) => snakeToCamel<FlavorRow>(row));
 
   return flavors;

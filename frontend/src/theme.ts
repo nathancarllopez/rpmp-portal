@@ -1,7 +1,19 @@
-import { createTheme, Modal, Paper } from "@mantine/core";
+import { Button, createTheme, Modal, Paper } from "@mantine/core";
 
 export const theme = createTheme({
   components: {
+    Button: Button.extend({
+      defaultProps: {
+        variant: 'default'
+      }
+    }),
+    Modal: Modal.extend({
+      defaultProps: {
+        withCloseButton: false,
+        padding: 0,
+        zIndex: 300
+      }
+    }),
     Paper: Paper.extend({
       defaultProps: {
         shadow: "md",
@@ -11,11 +23,5 @@ export const theme = createTheme({
         mt: 5
       }
     }),
-    Modal: Modal.extend({
-      defaultProps: {
-        withCloseButton: false,
-        padding: 0
-      }
-    })
   }
 });

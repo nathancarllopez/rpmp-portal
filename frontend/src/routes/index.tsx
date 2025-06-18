@@ -1,4 +1,3 @@
-import Subtitle from "@/routes/-components/Subtitle";
 import { notifications } from "@mantine/notifications";
 import { hasLength, isEmail, useForm } from "@mantine/form";
 import {
@@ -15,8 +14,10 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
-import { useAuth } from "@/integrations/supabase/auth/AuthProvider";
-import FormWithDisable from "./-components/FormWithDisable";
+import doLogin from "@/integrations/supabase/auth/doLogin";
+import Subtitle from "@/components/misc/Subtitle";
+import FormWithDisable from "@/components/misc/FormWithDisable";
+import useWakeUpServer from "@/hooks/useWakeupServer";
 
 type LoginRedirect = {
   redirect: string;
@@ -25,19 +26,20 @@ type LoginRedirect = {
 export const Route = createFileRoute("/")({
   validateSearch: (search: Record<string, unknown>): LoginRedirect => {
     return {
-      redirect: (search.redirect as string) || "/home",
+      redirect: (search.redirect as string) || "/dashboard/home",
     }
   },
   beforeLoad: ({ context, search }) => {
-    if (context.authCtx.isAuthenticated) {
+    if (context.userId) {
       throw redirect({ to: search.redirect });
     }
   },
   component: LoginForm,
 });
 
-
 function LoginForm() {
+  useWakeUpServer();
+
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
@@ -51,7 +53,6 @@ function LoginForm() {
     validateInputOnBlur: true,
   });
 
-  const { doLogin } = useAuth();
   const navigate = useNavigate();
   const router = useRouter();
   const search = Route.useSearch();
@@ -80,7 +81,7 @@ function LoginForm() {
         withCloseButton: true,
         color: "green",
         title: "Logged in!",
-        message: "Loading profile information...",
+        message: "Loading profile...",
       });
 
       await router.invalidate();

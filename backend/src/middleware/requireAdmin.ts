@@ -1,5 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
-import { supabase } from "../supabase/client";
+import { supabase } from "../supaClient";
 
 export const requireAdmin: RequestHandler = async (
   req: Request,

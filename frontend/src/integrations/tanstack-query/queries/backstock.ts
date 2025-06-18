@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import { snakeToCamel, type BackstockViewRow } from "@rpmp-portal/types";
+import { snakeToCamel, type AllBackstockRow } from "@rpmp-portal/types";
 import { queryOptions } from "@tanstack/react-query";
 
 export function backstockOptions() {
@@ -10,8 +10,8 @@ export function backstockOptions() {
   });
 }
 
-async function getBackstock(): Promise<BackstockViewRow[]> {
-  const { data, error } = await supabase.from("backstock_view").select();
+async function getBackstock(): Promise<AllBackstockRow[]> {
+  const { data, error } = await supabase.from("all_backstock").select();
 
   if (error) {
     console.warn("Failed to fetch backstock view");
@@ -20,8 +20,8 @@ async function getBackstock(): Promise<BackstockViewRow[]> {
     throw error;
   }
 
-  const backstockData: BackstockViewRow[] = data.map((row) =>
-    snakeToCamel<BackstockViewRow>(row)
+  const backstockData: AllBackstockRow[] = data.map((row) =>
+    snakeToCamel<AllBackstockRow>(row)
   );
 
   return backstockData;

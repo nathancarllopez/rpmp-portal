@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { supabase } from "../../supabase/client";
 import { InsertSettingsRow } from "@rpmp-portal/types";
+import { supabase } from "../../supaClient";
 
 export default async function createUser(
   req: Request,

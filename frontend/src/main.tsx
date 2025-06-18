@@ -16,19 +16,19 @@ import * as TanStackQueryProvider from "./integrations/tanstack-query/root-provi
 import { routeTree } from "./routeTree.gen";
 
 import reportWebVitals from "./reportWebVitals.ts";
-import { AuthProvider, useAuth } from "./integrations/supabase/auth/AuthProvider.tsx";
 
 // Create a new router instance
 const router = createRouter({
   routeTree,
   context: {
     ...TanStackQueryProvider.getContext(),
-    authCtx: undefined!,
+    userId: null,
   },
   defaultPreload: "intent",
   scrollRestoration: true,
   defaultStructuralSharing: true,
   defaultPreloadStaleTime: 0,
+  defaultPendingMs: 500,
 });
 
 // Register the router instance for type safety
@@ -36,14 +36,6 @@ declare module "@tanstack/react-router" {
   interface Register {
     router: typeof router;
   }
-}
-
-function RouteWrapper() {
-  const authCtx = useAuth();
-
-  return (
-    <RouterProvider router={router} context={{ authCtx }} />
-  );
 }
 
 // Render the app
@@ -55,9 +47,7 @@ if (rootElement && !rootElement.innerHTML) {
       <MantineProvider defaultColorScheme="dark" theme={theme}>
         <Notifications />
         <TanStackQueryProvider.Provider>
-          <AuthProvider>
-            <RouteWrapper />
-          </AuthProvider>
+          <RouterProvider router={router}/>
         </TanStackQueryProvider.Provider>
       </MantineProvider>
     </StrictMode>

@@ -1,9 +1,8 @@
+import Subtitle from "@/components/misc/Subtitle";
 import useCountdown from "@/hooks/useCountdown";
-import Subtitle from "@/routes/-components/Subtitle";
 import { Anchor, Box, Center, Container, Title } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-
 
 export const Route = createFileRoute("/(auth)/loggedOut")({
   component: RouteComponent,

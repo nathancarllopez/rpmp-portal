@@ -8,6 +8,7 @@
     "types"
   ],
   "scripts": {
+    "build": "npm run build --workspaces",
     "dev": "concurrently \"npm run dev --workspace frontend\" \"npm run dev --workspace backend\"",
     "supatypes": "dotenv -e .env.local -- bash -c 'npx supabase gen types typescript --project-id $SUPABASE_PROJECT_REF --schema public > types/database.types.ts'"
   },

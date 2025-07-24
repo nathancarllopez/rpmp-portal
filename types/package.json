@@ -1,11 +1,17 @@
 {
   "name": "@rpmp-portal/types",
   "version": "1.0.0",
-  "dependencies": {
-    "type-fest": "^4.41.0"
-  }
-  ,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.js"
+  },
+  "type": "commonjs",
   "scripts": {
     "build": "tsc"
+  },
+  "dependencies": {
+    "type-fest": "^4.41.0"
   }
 }

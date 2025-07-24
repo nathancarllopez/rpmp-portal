@@ -30,7 +30,7 @@ function RouteComponent() {
 
       <Stepper active={active} allowNextStepsSelect={false}>
         <Stepper.Step {...stepProps.adjustOrder}>
-          <AdjustOrderForm/>
+          <AdjustOrderForm toNextStep={toNextStep} toPrevStep={toPrevStep}/>
         </Stepper.Step>
         <Stepper.Step {...stepProps.shop}></Stepper.Step>
         <Stepper.Step {...stepProps.costs}></Stepper.Step>
